@@ -23,7 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  provider: ^4.3.2+2
+  http: ^0.12.2
+  font_awesome_flutter: ^8.8.1
+  timeline_list: ^0.0.5
+  intl: ^0.16.1
+  google_maps_flutter: ^0.5.31
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

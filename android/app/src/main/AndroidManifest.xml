@@ -9,6 +9,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="waytech"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+                   android:value="AlzaSyC2JMFQyG5r7NB99KuEg-c1vseP41YLPEE"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -24,6 +27,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+
+
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
@@ -43,5 +48,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
     </application>
 </manifest>
