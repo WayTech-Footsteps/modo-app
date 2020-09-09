@@ -10,7 +10,7 @@
         android:label="waytech"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-                   android:value="AlzaSyC2JMFQyG5r7NB99KuEg-c1vseP41YLPEE"/>
+                   android:value="AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g"/>
 
         <activity
             android:name=".MainActivity"

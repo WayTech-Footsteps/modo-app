@@ -1,6 +1,3 @@
-
-import 'package:waytech/enums/place_type.dart';
-
 abstract class Place {
   final int id;
   final String title;

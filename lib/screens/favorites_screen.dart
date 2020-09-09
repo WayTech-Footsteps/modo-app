@@ -8,17 +8,17 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final stationProvider = Provider.of<StationProvider>(context);
     return FutureBuilder(
-        future: stationProvider.getFavorites(),
-        builder: (context, snapshot) =>
-        snapshot.connectionState == ConnectionState.waiting ? Center(
-          child: CircularProgressIndicator(),) : ListView.builder(
-            itemBuilder: (context, index) =>
-                NearStationTile(
-                  station: stationProvider.favStations[index],
-                ),
-
-            itemCount: stationProvider.favStations.length
-        )
+      future: stationProvider.getFavorites(),
+      builder: (context, snapshot) =>
+          snapshot.connectionState == ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  itemBuilder: (context, index) => NearStationTile(
+                        station: snapshot.data[index],
+                      ),
+                  itemCount: snapshot.data.length),
     );
   }
 }

@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:provider/provider.dart';
+import 'package:waytech/providers/StationProvider.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -7,22 +11,71 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  GoogleMapController mapController;
+  Completer<GoogleMapController> _controller = Completer();
+  Set<Marker> _markers = {};
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  CameraPosition initialPosition;
+  var location = new Location();
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  Future _getLocation() async {
+    try {
+      location.onLocationChanged.listen((LocationData currentLocation) {
+        print('Latitude:${currentLocation.latitude}');
+        print('Longitude:${currentLocation.longitude}');
+        setState(() {
+          initialPosition = CameraPosition(
+              target: LatLng(currentLocation.latitude, currentLocation.longitude),
+              zoom: 14.567);
+        });
+
+        return LatLng(currentLocation.latitude, currentLocation.longitude);
+      });
+    } catch (e) {
+      print('ERROR:$e');
+      initialPosition = null;
+    }
+  }
+
+  void setMapPins(StationProvider stationProvider) {
+    setState(() {
+      // source pin
+      stationProvider.stations.forEach((station) {
+        _markers.add(Marker(
+            markerId: MarkerId(station.id.toString()),
+            position: LatLng(station.longitude, station.latitude),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen)));
+      });
+
+      // destination pin
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: _center,
-        zoom: 11.0,
-      ),
-    );
+    final StationProvider stationProvider = Provider.of(context, listen: false);
+    return initialPosition == null
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : GoogleMap(
+            mapType: MapType.hybrid,
+            initialCameraPosition: initialPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            mapToolbarEnabled: true,
+            onMapCreated: (GoogleMapController controller) {
+              setMapPins(stationProvider);
+              _controller.complete(controller);
+            },
+            markers: _markers,
+          );
   }
 }

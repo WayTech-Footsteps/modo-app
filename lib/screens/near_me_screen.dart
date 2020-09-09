@@ -9,13 +9,19 @@ class NearMeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stationProvider = Provider.of<StationProvider>(context);
-    return ListView.builder(
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: NearStationTile(station: stationProvider.stations[index],)
-      ),
-      itemCount: stationProvider.stations.length,
+    final stationProvider = Provider.of<StationProvider>(context, listen: false);
+    return FutureBuilder(
+        future: stationProvider.getStations(),
+        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting ? Center(
+          child: CircularProgressIndicator(),) : ListView.builder(
+          itemBuilder: (context, index) =>
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: NearStationTile(
+                    station: snapshot.data[index],)
+              ),
+          itemCount: snapshot.data.length,
+        ),
     );
   }
 }

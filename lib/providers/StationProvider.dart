@@ -13,22 +13,20 @@ class StationProvider with ChangeNotifier {
     Station(
       id: 3,
       title: "Lab",
-      latitude: 12.953400,
-      longitude: 12.546000,
+      latitude: 52.523391,
+      longitude: 29.639052,
     ),
-
     Station(
-        id: 1,
-        title: "Entrance",
-        latitude: 12.953400,
-        longitude: 12.546000,
+      id: 1,
+      title: "Entrance",
+      latitude: 52.522264,
+      longitude: 29.639920,
     ),
-
     Station(
-        id: 2,
-        title: "Pool",
-        latitude: 12.953400,
-        longitude: 12.546000,
+      id: 2,
+      title: "Pool",
+      longitude: 29.644997,
+      latitude: 52.516454,
     )
   ];
 
@@ -75,30 +73,60 @@ class StationProvider with ChangeNotifier {
       await saveFavorites();
       notifyListeners();
     }
-
   }
 
-  Future<List<Place>> getFavorites() async {
+  Future<List<Station>> getStations() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    List<String> encodedFavPlaces = prefs.getStringList("favStations");
-    List<Station> decodedFavStations = [];
+//    if (stations.isEmpty || stations == null) {
+//      final response = await http.get(ServerConfig.GetStations, headers: {
+//        'Content-Type': 'application/json',
+//      });
+//      List<Map<String, dynamic>> allStations = json.decode(response.body);
+//
+//      allStations.forEach((currStation) {
+//        Station station = Station.fromJson(currStation);
+//        stations.add(station);
+//      });
+//    }
 
-    encodedFavPlaces.forEach((encodedFavPlace) {
-      Map<String, dynamic> favStation = json.decode(encodedFavPlace);
-      decodedFavStations.add(Station.fromJson(favStation));
-    });
+    List<String> encodedFavStations = prefs.getStringList("favStations");
 
-    favStations = decodedFavStations;
-    return decodedFavStations;
+    if (favStations == null) {
+      favStations = [];
+    }
+
+    if (encodedFavStations != null) {
+      stations.forEach((station) {
+        if (encodedFavStations.contains(station.id.toString())) {
+          station.starred = true;
+          favStations.add(station);
+        }
+      });
+    }
+
+    notifyListeners();
+
+    print(stations);
+
+    return stations;
+
+//    favStations = decodedFavStations;
+//    return decodedFavStations;
+  }
+
+  Future<List<Station>> getFavorites() async {
+    return favStations;
   }
 
   Future<void> saveFavorites() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> encodedStations = [];
     favStations.forEach((station) {
-      String encodedStation = json.encode(station.toJson());
-      encodedStations.add(encodedStation);
+//      String encodedStation = json.encode(station.toJson());
+//      encodedStations.add(encodedStation);
+      String encodedStationId = station.id.toString();
+      encodedStations.add(encodedStationId);
     });
 
     await prefs.setStringList('favStations', encodedStations);

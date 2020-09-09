@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/models/Path.dart';
 import 'package:waytech/providers/PathProvider.dart';
@@ -31,6 +35,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
           },
           validator: null,
           suffixIcon: Icon(Icons.map),
+          isDone: true,
           label: "From"),
       InputField(
           onSaved: (v) {
@@ -38,6 +43,34 @@ class _JourneyScreenState extends State<JourneyScreen> {
           },
           validator: null,
           suffixIcon: Icon(Icons.map),
+          actionFunction: () {
+            showLocationPicker(
+              context, "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
+              myLocationButtonEnabled: true,
+              layersButtonEnabled: true,
+              countries: ['IR'],
+            );
+
+
+
+//            Navigator.push(
+//              context,
+//              MaterialPageRoute(
+//                builder: (context) => PlacePicker(
+//                  apiKey: "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",   // Put YOUR OWN KEY here.
+//                  desiredLocationAccuracy: LocationAccuracy.high,
+//
+//                  onPlacePicked: (result) {
+//                    Navigator.of(context).pop();
+//                  },
+//                  initialPosition: LatLng(29.642269, 52.517159),
+//                  useCurrentLocation: true,
+//
+//                ),
+//              )
+//            );
+
+          },
           label: "To"),
     ];
 
