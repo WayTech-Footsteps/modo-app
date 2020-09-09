@@ -1,23 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_list/timeline_model.dart';
 import 'package:waytech/models/Place.dart';
-import 'package:waytech/providers/PlaceProvider.dart';
+import 'package:waytech/models/Station.dart';
+import 'package:waytech/providers/StationProvider.dart';
 
 class NearStationTile extends StatefulWidget {
-  final Place place;
+  final Station station;
 
 
-  NearStationTile({this.place});
+  NearStationTile({this.station});
 
   @override
   _NearStationTileState createState() => _NearStationTileState();
 }
 
 class _NearStationTileState extends State<NearStationTile> {
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -26,7 +31,7 @@ class _NearStationTileState extends State<NearStationTile> {
           children: [
             Icon(FontAwesomeIcons.bus),
             SizedBox(width: 20.0,),
-            Text(widget.place.title),
+            Text(widget.station.title),
           ],
         ),
       ),
@@ -44,11 +49,11 @@ class _NearStationTileState extends State<NearStationTile> {
             ),
 
 
-            Consumer<PlaceProvider>(
-              builder: (context, place, child) => IconButton(
-                icon: Icon(widget.place.starred ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
-                onPressed: () {
-                  place.toggleFavorite(widget.place.id);
+            Consumer<StationProvider>(
+              builder: (context, station, child) => IconButton(
+                icon: Icon(widget.station.starred ? Icons.favorite : Icons.favorite_border, color: Colors.red,),
+                onPressed: () async {
+                  station.toggleFavorite(widget.station.id);
                 },
               ),
             )

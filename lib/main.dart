@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waytech/providers/PlaceProvider.dart';
+import 'package:waytech/providers/PathProvider.dart';
+import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/screens/tab_screen.dart';
 
 void main() {
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<PlaceProvider>.value(value: PlaceProvider())
+        ChangeNotifierProvider<StationProvider>.value(value: StationProvider()),
+        ChangeNotifierProvider<PathProvider>.value(value: PathProvider()),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',

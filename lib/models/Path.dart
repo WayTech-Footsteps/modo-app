@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waytech/models/Place.dart';
 
-class Path with ChangeNotifier {
+class Path {
   final Place start;
   final Place end;
   final double weight;
