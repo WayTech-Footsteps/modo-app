@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/models/Path.dart';
@@ -17,8 +18,8 @@ class JourneyScreen extends StatefulWidget {
 
 class _JourneyScreenState extends State<JourneyScreen> {
   final Map<String, dynamic> info = {};
-
-
+  TextEditingController fromController = TextEditingController();
+  TextEditingController toController = TextEditingController();
 
   @override
   void initState() {
@@ -30,28 +31,49 @@ class _JourneyScreenState extends State<JourneyScreen> {
   Widget build(BuildContext context) {
     final List<Widget> inputTiles = [
       InputField(
-          onSaved: (v) {
-            info["from"] = v;
-          },
-          validator: null,
-          suffixIcon: Icon(Icons.map),
-          isDone: true,
-          label: "From"),
+        onSaved: (v) {
+          info["from"] = v;
+        },
+        validator: null,
+        suffixIcon: Icon(Icons.map),
+        isDone: true,
+        label: "From",
+        controller: fromController,
+        actionFunction: () async {
+          LocationResult result = await showLocationPicker(
+            context,
+            "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
+            myLocationButtonEnabled: true,
+            layersButtonEnabled: true,
+            countries: ['IR'],
+
+          );
+
+          fromController.text = result.address;
+
+          info["from"] = result.address;
+
+        },
+      ),
       InputField(
           onSaved: (v) {
             info["to"] = v;
           },
+          controller: toController,
           validator: null,
           suffixIcon: Icon(Icons.map),
-          actionFunction: () {
-            showLocationPicker(
-              context, "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
+          actionFunction: () async {
+            LocationResult result = await showLocationPicker(
+              context,
+              "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
               myLocationButtonEnabled: true,
               layersButtonEnabled: true,
               countries: ['IR'],
             );
 
+            toController.text = result.address;
 
+            info["to"] = result.address;
 
 //            Navigator.push(
 //              context,
@@ -69,19 +91,17 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //                ),
 //              )
 //            );
-
           },
           label: "To"),
     ];
 
     final mediaSize = MediaQuery.of(context).size;
-    PathProvider pathProvider = Provider.of<PathProvider>(context, listen: false);
+    PathProvider pathProvider =
+        Provider.of<PathProvider>(context, listen: false);
 
     final stationProvider = Provider.of<StationProvider>(context);
 
-    List<Path> paths = [
-
-    ];
+    List<Path> paths = [];
 
     return Column(
       children: [
@@ -101,10 +121,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                   itemCount: inputTiles.length,
                 ),
               ),
-
               Container(
                 width: mediaSize.width * 0.9,
-
                 child: ListView.builder(
                   physics: PageScrollPhysics(),
                   shrinkWrap: true,
@@ -115,7 +133,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.subdirectory_arrow_left),
-                          SizedBox(width: 2.0,),
+                          SizedBox(
+                            width: 2.0,
+                          ),
                           Text(paths[index].start.title),
                         ],
                       ),
@@ -123,20 +143,22 @@ class _JourneyScreenState extends State<JourneyScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.subdirectory_arrow_right),
-                          SizedBox(width: 2.0,),
+                          SizedBox(
+                            width: 2.0,
+                          ),
                           Text(paths[index].end.title),
                         ],
                       ),
-
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.access_time),
-                          SizedBox(width: 2.0,),
+                          SizedBox(
+                            width: 2.0,
+                          ),
                           Text("${paths[index].weight} min"),
                         ],
                       ),
-
                     ),
                   ),
                   itemCount: paths.length,

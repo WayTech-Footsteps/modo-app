@@ -11,6 +11,7 @@ class InputField extends StatefulWidget {
   final Function actionFunction;
   final int maxLine;
   final Icon suffixIcon;
+  final TextEditingController controller;
 
   const InputField({Key key,
     @required this.validator,
@@ -22,6 +23,7 @@ class InputField extends StatefulWidget {
     this.isDone = false,
     this.maxLine = 1,
     this.suffixIcon,
+    this.controller,
     this.actionFunction})
       : super(key: key);
 
@@ -36,6 +38,7 @@ class _InputFieldState extends State<InputField> {
       obscureText: widget.obscureText,
       validator: widget.validator,
       onSaved: widget.onSaved,
+      controller: widget.controller,
       cursorColor: Theme
           .of(context)
           .primaryColor,
