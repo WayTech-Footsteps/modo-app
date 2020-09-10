@@ -26,7 +26,7 @@ dependencies:
   provider: ^4.3.2+2
   http: ^0.12.2
   font_awesome_flutter: ^8.8.1
-  timeline_list: ^0.0.5
+  timeline_tile: ^0.1.2
   intl: ^0.16.1
   google_maps_flutter: ^0.5.31
   shared_preferences: ^0.5.10
