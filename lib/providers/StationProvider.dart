@@ -9,26 +9,7 @@ import 'package:waytech/models/Station.dart';
 import 'package:waytech/server_config/server_config.dart';
 
 class StationProvider with ChangeNotifier {
-  List<Station> stations = [
-    Station(
-      id: 3,
-      title: "Lab",
-      latitude: 52.523391,
-      longitude: 29.639052,
-    ),
-    Station(
-      id: 1,
-      title: "Entrance",
-      latitude: 52.522264,
-      longitude: 29.639920,
-    ),
-    Station(
-      id: 2,
-      title: "Pool",
-      longitude: 29.644997,
-      latitude: 52.516454,
-    )
-  ];
+  List<Station> stations = [];
 
   List<Station> favStations = [];
 
@@ -78,17 +59,24 @@ class StationProvider with ChangeNotifier {
   Future<List<Station>> getStations() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-//    if (stations.isEmpty || stations == null) {
-//      final response = await http.get(ServerConfig.GetStations, headers: {
-//        'Content-Type': 'application/json',
-//      });
-//      List<Map<String, dynamic>> allStations = json.decode(response.body);
-//
-//      allStations.forEach((currStation) {
-//        Station station = Station.fromJson(currStation);
-//        stations.add(station);
-//      });
-//    }
+    if (stations.isEmpty || stations == null) {
+      print("here");
+      print(ServerConfig.GetStations);
+      final response = await http.get(
+        ServerConfig.GetStations,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      List<Map<String, dynamic>> allStations =
+          List<Map<String, dynamic>>.from(json.decode(response.body));
+      allStations.forEach((currStation) {
+        Station station = Station.fromJson(currStation);
+        stations.add(station);
+      });
+    }
 
     List<String> encodedFavStations = prefs.getStringList("favStations");
 

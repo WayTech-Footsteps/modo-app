@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/models/Station.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'file:///D:/Mobile%20App/waytech-app/lib/widgets/near_station_tile.dart';
 
-class NearMeScreen extends StatelessWidget {
+class NearMeScreen extends StatefulWidget {
 
+  @override
+  _NearMeScreenState createState() => _NearMeScreenState();
+}
+
+class _NearMeScreenState extends State<NearMeScreen> {
 
   @override
   Widget build(BuildContext context) {

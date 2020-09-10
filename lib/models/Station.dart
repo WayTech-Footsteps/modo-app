@@ -7,12 +7,11 @@ class Station extends Place {
       : super(id: id, title: title, longitude: longitude, latitude: latitude);
 
   factory Station.fromJson(Map<String, dynamic> parsedJson) {
-    return new Station(
-        id: parsedJson['id'] ?? "",
-        title: parsedJson['title'] ?? "",
-        longitude: parsedJson['longitude'] ?? "",
-        latitude: parsedJson['latitude'] ?? "",
-        starred: parsedJson['starred'] ?? "");
+    return Station(
+        id: parsedJson['id'] as int,
+        title: parsedJson['title'] as String,
+        latitude: double.parse(parsedJson['latitude']),
+        longitude: double.parse(parsedJson['longitude']));
   }
 
   Map<String, dynamic> toJson() {
