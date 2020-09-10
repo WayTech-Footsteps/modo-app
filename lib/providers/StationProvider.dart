@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:latlong/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waytech/enums/place_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:waytech/models/Place.dart';
 import 'package:waytech/models/Station.dart';
+import 'package:waytech/providers/LocationProvider.dart';
 import 'package:waytech/server_config/server_config.dart';
 
 class StationProvider with ChangeNotifier {
@@ -57,7 +60,7 @@ class StationProvider with ChangeNotifier {
     }
   }
 
-  Future<List<Station>> getStations() async {
+  Future<List<Station>> getStations(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Station> res_stations = [];
     if (stations.isEmpty || stations == null) {
@@ -68,13 +71,29 @@ class StationProvider with ChangeNotifier {
           'Accept': 'application/json',
         },
       );
+      final Distance distance = new Distance();
 
       List<Map<String, dynamic>> allStations =
-          List<Map<String, dynamic>>.from(json.decode(response.body));
+      List<Map<String, dynamic>>.from(json.decode(response.body));
+      final locationProvider =
+      Provider.of<LocationProvider>(context, listen: false);
       allStations.forEach((currStation) {
         Station station = Station.fromJson(currStation);
+        print("statuon");
+        print(locationProvider.currentMapLocation);
+//        station.distance = distance.as(LengthUnit.Meter,
+//            new LatLng(station.latitude, station.longitude),
+//            locationProvider.currentMapLocation);
+        num dist = distance.as(LengthUnit.Meter,
+            new LatLng(station.latitude, station.longitude),
+            locationProvider.currentMapLocation);
+        station.distance = dist.toInt();
+//        station.distance = distance.as(LengthUnit.Meter,
+//            new LatLng(station.latitude, station.longitude), locationProvider.currentMapLocation);
+
         res_stations.add(station);
       });
+      print("here");
     }
 
     List<String> encodedFavStations = prefs.getStringList("favStations");

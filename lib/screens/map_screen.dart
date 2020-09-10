@@ -16,12 +16,14 @@ class _MapScreenState extends State<MapScreen> {
 
   CameraPosition initialPosition;
   var location = new Location();
+  LocationData currentMapLocation;
 
   Future _getLocation() async {
     try {
       location.onLocationChanged.listen((LocationData currentLocation) {
         print('Latitude:${currentLocation.latitude}');
         print('Longitude:${currentLocation.longitude}');
+        currentMapLocation = currentLocation;
         setState(() {
           initialPosition = CameraPosition(
               target: LatLng(currentLocation.latitude, currentLocation.longitude),

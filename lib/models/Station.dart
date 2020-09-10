@@ -2,6 +2,7 @@ import 'package:waytech/models/Place.dart';
 
 class Station extends Place {
   bool starred;
+  int distance;
 
   Station({id, title, longitude, latitude, this.starred: false})
       : super(id: id, title: title, longitude: longitude, latitude: latitude);

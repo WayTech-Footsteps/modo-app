@@ -22,6 +22,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.7+3"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   args:
     dependency: transitive
     description:
@@ -78,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.13"
+  console_log_handler:
+    dependency: transitive
+    description:
+      name: console_log_handler
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.6"
   convert:
     dependency: transitive
     description:
@@ -259,6 +273,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
+  latlong:
+    dependency: "direct main"
+    description:
+      name: latlong
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.1"
   location:
     dependency: "direct main"
     description:
@@ -287,6 +308,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.4"
   matcher:
     dependency: transitive
     description:
@@ -509,6 +537,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  validate:
+    dependency: transitive
+    description:
+      name: validate
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.0"
   vector_math:
     dependency: transitive
     description:

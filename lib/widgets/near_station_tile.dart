@@ -44,7 +44,7 @@ class _NearStationTileState extends State<NearStationTile> {
               children: [
                 Icon(Icons.near_me),
                 SizedBox(height: 5.0,),
-                Text("312 m")
+                Text("${widget.station.distance.toString()} m")
               ],
             ),
 

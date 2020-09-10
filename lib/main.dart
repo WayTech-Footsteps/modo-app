@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_splash/flutter_splash.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/providers/LocationProvider.dart';
 import 'package:waytech/providers/PathProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/screens/tab_screen.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<StationProvider>.value(value: StationProvider()),
         ChangeNotifierProvider<PathProvider>.value(value: PathProvider()),
+        ChangeNotifierProvider<LocationProvider>.value(value: LocationProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
