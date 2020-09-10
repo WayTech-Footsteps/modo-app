@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 import 'package:intl/intl.dart';
 
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:timeline_list/timeline.dart';
-import 'package:timeline_list/timeline_model.dart';
 import 'package:waytech/models/Path.dart';
 import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/providers/TimeEntryProvider.dart';
@@ -26,12 +25,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
   List<TimeEntry> timeEntries = [];
-  List<TimelineModel> timeLineModels = [
-    TimelineModel(Placeholder(),
-        position: TimelineItemPosition.random,
-        iconBackground: Colors.redAccent,
-        icon: Icon(Icons.blur_circular)),
-  ];
 
   @override
   void initState() {
@@ -40,43 +33,16 @@ class _JourneyScreenState extends State<JourneyScreen> {
   }
 
   Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
-//    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
-//        info["start"],
-//        info["end"],
-//        "11:35:00"
-//    );
-//
-//    print("FETCHED");
-//    print(fetchedTimeEntries);
-//    List<TimelineModel> timeLines = [
-//      TimelineModel(Placeholder(),
-//          position: TimelineItemPosition.random,
-//          iconBackground: Colors.redAccent,
-//          icon: Icon(Icons.blur_circular)),
-//    ];
-//
-//    setState(() {
-//      timeEntries = fetchedTimeEntries;
-//      timeEntries.forEach((timeEntry) {
-//        timeLines.addAll(
-//          [TimelineModel(
-//            Text(timeEntry.startLoc),
-//            icon: Icon(Icons.departure_board)
-//          ),
-//
-//          TimelineModel(
-//              Text(timeEntry.endLoc),
-//              icon: Icon(Icons.departure_board)
-//          )]
-//        );
-//      });
-//
-//      timeLineModels = timeLines;
-//    });
+    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
+        info["start"], info["end"], "11:35:00");
 
+    print("FETCHED");
+    print(fetchedTimeEntries);
 
+    setState(() {
+      timeEntries = fetchedTimeEntries;
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +68,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                     info["from"] = result.title;
                     info["start"] = result.id;
                   },
-
                 ),
-              )
-          );
+              ));
 
 //          LocationResult result = await showLocationPicker(
 //            context,
@@ -120,7 +84,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //          fromController.text = result.address;
 //
 //          info["from"] = result.address;
-
         },
       ),
       InputField(
@@ -142,10 +105,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                       info["to"] = result.title;
                       info["end"] = result.id;
                     },
-
                   ),
-                )
-            );
+                ));
 
 //            Navigator.push(
 //              context,
@@ -173,7 +134,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
     final stationProvider = Provider.of<StationProvider>(context);
 
-
     return Column(
       children: [
         Center(
@@ -198,59 +158,88 @@ class _JourneyScreenState extends State<JourneyScreen> {
                   getTimeEntry(timeEntryProvider);
                   print(DateFormat('HH:mm:ss').format(DateTime.now()));
                 },
-
                 child: Text("find the Path"),
               ),
 
-//              Timeline(children: timeLineModels, position: TimelinePosition.Left)
+              // Timeline(
+              //     children: timeLineModels, position: TimelinePosition.Center)
 
               Container(
                 width: mediaSize.width * 0.9,
                 child: ListView.builder(
                   physics: PageScrollPhysics(),
                   shrinkWrap: true,
-                  itemBuilder: (context, index) => Container(
-                    color: Colors.blue.withOpacity(0.4),
-                    child: ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.subdirectory_arrow_left),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text(timeEntries[index].startLoc),
-                        ],
-                      ),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.subdirectory_arrow_right),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text(timeEntries[index].endLoc),
-                        ],
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.access_time),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text("${timeEntries[index].arrivalTime} - ${timeEntries[index].departureTime}"),
-                        ],
-                      ),
-                    ),
-                  ),
+                  itemBuilder: (context, index) {
+                    return index % 2 == 0
+                        ? TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineX: 0.1,
+                            isFirst: index == 0,
+                            isLast: index == timeEntries.length - 1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 40,
+                              height: 40,
+                              indicator:
+                                  _IndicatorExample(number: '${index + 1}'),
+                              drawGap: true,
+                            ),
+                            topLineStyle: LineStyle(
+                              color: Colors.white.withOpacity(0.2),
+                            ),
+                            rightChild: Text(timeEntries[index].endLoc),
+                          )
+                        : TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineX: 0.1,
+                            isFirst: index == 0,
+                            isLast: index == timeEntries.length - 1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 40,
+                              height: 40,
+                              indicator:
+                                  _IndicatorExample(number: '${index + 1}'),
+                              drawGap: true,
+                            ),
+                            topLineStyle: LineStyle(
+                              color: Colors.white.withOpacity(0.2),
+                            ),
+                            leftChild: Text(timeEntries[index].startLoc),
+                          );
+                  },
                   itemCount: timeEntries.length,
                 ),
-              )
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _IndicatorExample extends StatelessWidget {
+  const _IndicatorExample({Key key, this.number}) : super(key: key);
+
+  final String number;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: Colors.white.withOpacity(0.2),
+            width: 4,
+          ),
+        ),
+      ),
+      child: Center(
+        child: Text(
+          number,
+          style: const TextStyle(fontSize: 30),
+        ),
+      ),
     );
   }
 }

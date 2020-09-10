@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/providers/StationProvider.dart';
-import 'file:///D:/Mobile%20App/waytech-app/lib/widgets/near_station_tile.dart';
+import '../widgets/near_station_tile.dart';
 
 class FavoritesScreen extends StatelessWidget {
   @override
