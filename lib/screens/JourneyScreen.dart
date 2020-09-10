@@ -54,6 +54,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
     Duration breakTimeDuration = currDepTime.difference(prevArrTime);
 
+    print("diff: " + breakTimeDuration.inMinutes.toString() + " " + breakTimeDuration.inSeconds.toString());
     return breakTimeDuration;
   }
 
@@ -184,9 +185,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                     physics: PageScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return Wrap(
+                      return  Wrap(
                         children: [
-                          TimelineTile(
+                          (index != 0 && index != timeEntries.length - 1) ? TimelineTile(
                             alignment: TimelineAlign.center,
                             hasIndicator: true,
                             lineX: 0.1,
@@ -213,7 +214,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                               fontWeight: FontWeight.bold
                             ),),
 
-                            rightChild: (index != 0 && index != timeEntries.length - 1) ? TimelineChild(
+                            rightChild: TimelineChild(
                               step: TimelineStep(
                                 breakTimeDuration: calculateBreakTime(
                                   timeEntries[index - 1].arrivalTime,
@@ -222,7 +223,33 @@ class _JourneyScreenState extends State<JourneyScreen> {
                                 iconData: Icons.local_cafe
                               ),
 
-                            ) : Container(),
+                            ),
+                          ) : TimelineTile(
+                            alignment: TimelineAlign.center,
+                            hasIndicator: true,
+                            lineX: 0.1,
+                            isFirst: index == 0,
+                            isLast: index == timeEntries.length - 1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 40,
+                              height: 40,
+                              indicator: CustomIndicator(
+                                timeEntryType: index == 0
+                                    ? TimeEntryType.Start
+                                    : index == timeEntries.length - 1
+                                    ? TimeEntryType.End
+                                    : TimeEntryType.Middle,
+                                number:
+                                '${timeEntries[index].lineNumber.toString()}',
+                              ),
+                              drawGap: true,
+                            ),
+                            topLineStyle: LineStyle(
+                              color: Colors.blue.withOpacity(0.7),
+                            ),
+                            leftChild: Text(timeEntries[index].startLoc, style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),),
                           )
                         ],
                       );
