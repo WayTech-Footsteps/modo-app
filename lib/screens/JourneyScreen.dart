@@ -48,6 +48,15 @@ class _JourneyScreenState extends State<JourneyScreen> {
     });
   }
 
+  Duration calculateBreakTime(String previousArrivalTime, String currentDepartureTime) {
+    DateTime prevArrTime = DateFormat('HH:mm:ss').parse(previousArrivalTime);
+    DateTime currDepTime = DateFormat('HH:mm:ss').parse(currentDepartureTime);
+
+    Duration breakTimeDuration = currDepTime.difference(prevArrTime);
+
+    return breakTimeDuration;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> inputTiles = [
@@ -175,65 +184,48 @@ class _JourneyScreenState extends State<JourneyScreen> {
                     physics: PageScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return index % 2 == 0
-                          ? Wrap(
-                              children: [
-                                TimelineTile(
-                                  alignment: TimelineAlign.center,
-                                  hasIndicator: true,
-                                  lineX: 0.1,
-                                  isFirst: index == 0,
-                                  isLast: index == timeEntries.length - 1,
-                                  indicatorStyle: IndicatorStyle(
-                                    width: 40,
-                                    height: 40,
-                                    indicator: CustomIndicator(
-                                      timeEntryType: index == 0
-                                          ? TimeEntryType.Start
-                                          : index == timeEntries.length - 1
-                                              ? TimeEntryType.End
-                                              : TimeEntryType.Middle,
-                                      number:
-                                          '${timeEntries[index].lineNumber.toString()}',
-                                    ),
-                                    drawGap: true,
-                                  ),
-                                  topLineStyle: LineStyle(
-                                    color: Colors.blue.withOpacity(0.7),
-                                  ),
-                                  leftChild: Text(timeEntries[index].startLoc),
-                                )
-                              ],
-                            )
-                          : Wrap(
-                              children: [
-                                TimelineTile(
-                                  alignment: TimelineAlign.center,
-                                  hasIndicator: true,
-                                  lineX: 0.1,
-                                  isFirst: index == 0,
-                                  isLast: index == timeEntries.length - 1,
-                                  indicatorStyle: IndicatorStyle(
-                                    width: 40,
-                                    height: 40,
-                                    indicator: CustomIndicator(
-                                      timeEntryType: index == timeEntries.length - 1
-                                          ? TimeEntryType.End
-                                          : TimeEntryType.Middle,
-                                      number:
-                                      '${timeEntries[index].lineNumber.toString()}',
-                                    ),
-                                    drawGap: true,
-                                  ),
-                                  topLineStyle: LineStyle(
-                                      color: Colors.blue.withOpacity(0.7)),
-                                  rightChild: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(timeEntries[index].startLoc),
-                                  ),
-                                )
-                              ],
-                            );
+                      return Wrap(
+                        children: [
+                          TimelineTile(
+                            alignment: TimelineAlign.center,
+                            hasIndicator: true,
+                            lineX: 0.1,
+                            isFirst: index == 0,
+                            isLast: index == timeEntries.length - 1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 40,
+                              height: 40,
+                              indicator: CustomIndicator(
+                                timeEntryType: index == 0
+                                    ? TimeEntryType.Start
+                                    : index == timeEntries.length - 1
+                                    ? TimeEntryType.End
+                                    : TimeEntryType.Middle,
+                                number:
+                                '${timeEntries[index].lineNumber.toString()}',
+                              ),
+                              drawGap: true,
+                            ),
+                            topLineStyle: LineStyle(
+                              color: Colors.blue.withOpacity(0.7),
+                            ),
+                            leftChild: Text(timeEntries[index].startLoc, style: TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),),
+
+                            rightChild: (index != 0 && index != timeEntries.length - 1) ? TimelineChild(
+                              step: TimelineStep(
+                                breakTimeDuration: calculateBreakTime(
+                                  timeEntries[index - 1].arrivalTime,
+                                  timeEntries[index].departureTime,
+                                ),
+                                iconData: Icons.local_cafe
+                              ),
+
+                            ) : Container(),
+                          )
+                        ],
+                      );
                     },
                     itemCount: timeEntries.length,
                   ),

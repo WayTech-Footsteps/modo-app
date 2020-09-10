@@ -1,12 +1,16 @@
+import 'package:flutter/material.dart';
+
 class TimelineStep {
   final String hour;
   final String message;
-  final int duration;
+  final Duration breakTimeDuration;
+  final IconData iconData;
 
   TimelineStep({
     this.hour,
     this.message,
-    this.duration,
+    this.breakTimeDuration,
+    this.iconData
   });
 
 

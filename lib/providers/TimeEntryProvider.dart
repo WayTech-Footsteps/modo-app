@@ -30,6 +30,19 @@ class TimeEntryProvider with ChangeNotifier {
       convertedTimeEntries.add(TimeEntry.fromJson(timeEntry));
     });
 
+    TimeEntry finalTimeEntry;
+    if (convertedTimeEntries.isNotEmpty) {
+      TimeEntry lastEntry = convertedTimeEntries[convertedTimeEntries.length - 1];
+      finalTimeEntry = TimeEntry(
+        startLoc: lastEntry.endLoc,
+        lineNumber: lastEntry.lineNumber,
+      );
+
+      convertedTimeEntries.add(finalTimeEntry);
+
+    }
+
+
     print("converted");
     print(convertedTimeEntries);
 
