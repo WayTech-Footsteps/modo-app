@@ -40,39 +40,39 @@ class _JourneyScreenState extends State<JourneyScreen> {
   }
 
   Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
-    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
-        info["start"],
-        info["end"],
-        "11:35:00"
-    );
-
-    print("FETCHED");
-    print(fetchedTimeEntries);
-    List<TimelineModel> timeLines = [
-      TimelineModel(Placeholder(),
-          position: TimelineItemPosition.random,
-          iconBackground: Colors.redAccent,
-          icon: Icon(Icons.blur_circular)),
-    ];
-
-    setState(() {
-      timeEntries = fetchedTimeEntries;
-      timeEntries.forEach((timeEntry) {
-        timeLines.addAll(
-          [TimelineModel(
-            Text(timeEntry.startLoc),
-            icon: Icon(Icons.departure_board)
-          ),
-
-          TimelineModel(
-              Text(timeEntry.endLoc),
-              icon: Icon(Icons.departure_board)
-          )]
-        );
-      });
-
-      timeLineModels = timeLines;
-    });
+//    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
+//        info["start"],
+//        info["end"],
+//        "11:35:00"
+//    );
+//
+//    print("FETCHED");
+//    print(fetchedTimeEntries);
+//    List<TimelineModel> timeLines = [
+//      TimelineModel(Placeholder(),
+//          position: TimelineItemPosition.random,
+//          iconBackground: Colors.redAccent,
+//          icon: Icon(Icons.blur_circular)),
+//    ];
+//
+//    setState(() {
+//      timeEntries = fetchedTimeEntries;
+//      timeEntries.forEach((timeEntry) {
+//        timeLines.addAll(
+//          [TimelineModel(
+//            Text(timeEntry.startLoc),
+//            icon: Icon(Icons.departure_board)
+//          ),
+//
+//          TimelineModel(
+//              Text(timeEntry.endLoc),
+//              icon: Icon(Icons.departure_board)
+//          )]
+//        );
+//      });
+//
+//      timeLineModels = timeLines;
+//    });
 
 
   }
@@ -202,51 +202,51 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 child: Text("find the Path"),
               ),
 
-              Timeline(children: timeLineModels, position: TimelinePosition.Left)
+//              Timeline(children: timeLineModels, position: TimelinePosition.Left)
 
-//              Container(
-//                width: mediaSize.width * 0.9,
-//                child: ListView.builder(
-//                  physics: PageScrollPhysics(),
-//                  shrinkWrap: true,
-//                  itemBuilder: (context, index) => Container(
-//                    color: Colors.blue.withOpacity(0.4),
-//                    child: ListTile(
-//                      leading: Row(
-//                        mainAxisSize: MainAxisSize.min,
-//                        children: [
-//                          Icon(Icons.subdirectory_arrow_left),
-//                          SizedBox(
-//                            width: 2.0,
-//                          ),
-//                          Text(timeEntries[index].startLoc),
-//                        ],
-//                      ),
-//                      title: Row(
-//                        mainAxisSize: MainAxisSize.min,
-//                        children: [
-//                          Icon(Icons.subdirectory_arrow_right),
-//                          SizedBox(
-//                            width: 2.0,
-//                          ),
-//                          Text(timeEntries[index].endLoc),
-//                        ],
-//                      ),
-//                      trailing: Row(
-//                        mainAxisSize: MainAxisSize.min,
-//                        children: [
-//                          Icon(Icons.access_time),
-//                          SizedBox(
-//                            width: 2.0,
-//                          ),
-//                          Text("${timeEntries[index].arrivalTime} - ${timeEntries[index].departureTime}"),
-//                        ],
-//                      ),
-//                    ),
-//                  ),
-//                  itemCount: timeEntries.length,
-//                ),
-//              )
+              Container(
+                width: mediaSize.width * 0.9,
+                child: ListView.builder(
+                  physics: PageScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => Container(
+                    color: Colors.blue.withOpacity(0.4),
+                    child: ListTile(
+                      leading: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.subdirectory_arrow_left),
+                          SizedBox(
+                            width: 2.0,
+                          ),
+                          Text(timeEntries[index].startLoc),
+                        ],
+                      ),
+                      title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.subdirectory_arrow_right),
+                          SizedBox(
+                            width: 2.0,
+                          ),
+                          Text(timeEntries[index].endLoc),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.access_time),
+                          SizedBox(
+                            width: 2.0,
+                          ),
+                          Text("${timeEntries[index].arrivalTime} - ${timeEntries[index].departureTime}"),
+                        ],
+                      ),
+                    ),
+                  ),
+                  itemCount: timeEntries.length,
+                ),
+              )
             ],
           ),
         ),
