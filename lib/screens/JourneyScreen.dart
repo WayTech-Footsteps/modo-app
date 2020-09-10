@@ -134,35 +134,36 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
     final stationProvider = Provider.of<StationProvider>(context);
 
-    return Column(
-      children: [
-        Center(
-          // wrap this with single child scroll view
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                width: mediaSize.width * 0.9,
-                child: ListView.builder(
-                  physics: PageScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      child: inputTiles[index]),
-                  itemCount: inputTiles.length,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Center(
+            // wrap this with single child scroll view
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  width: mediaSize.width * 0.9,
+                  child: ListView.builder(
+                    physics: PageScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        child: inputTiles[index]),
+                    itemCount: inputTiles.length,
+                  ),
                 ),
-              ),
 
-              RaisedButton(
-                onPressed: () {
-                  getTimeEntry(timeEntryProvider);
-                  print(DateFormat('HH:mm:ss').format(DateTime.now()));
-                },
-                child: Text("find the Path"),
-              ),
+                RaisedButton(
+                  onPressed: () {
+                    getTimeEntry(timeEntryProvider);
+                    print(DateFormat('HH:mm:ss').format(DateTime.now()));
+                  },
+                  child: Text("find the Path"),
+                ),
 
-              // Timeline(
-              //     children: timeLineModels, position: TimelinePosition.Center)
+                // Timeline(
+                //     children: timeLineModels, position: TimelinePosition.Center)
 
               Container(
                 width: mediaSize.width * 0.9,
@@ -171,75 +172,114 @@ class _JourneyScreenState extends State<JourneyScreen> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return index % 2 == 0
-                        ? TimelineTile(
-                            alignment: TimelineAlign.manual,
-                            lineX: 0.1,
-                            isFirst: index == 0,
-                            isLast: index == timeEntries.length - 1,
-                            indicatorStyle: IndicatorStyle(
-                              width: 40,
-                              height: 40,
-                              indicator:
-                                  _IndicatorExample(number: '${index + 1}'),
-                              drawGap: true,
-                            ),
-                            topLineStyle: LineStyle(
-                              color: Colors.white.withOpacity(0.2),
-                            ),
-                            rightChild: Text(timeEntries[index].endLoc),
-                          )
-                        : TimelineTile(
-                            alignment: TimelineAlign.manual,
-                            lineX: 0.1,
-                            isFirst: index == 0,
-                            isLast: index == timeEntries.length - 1,
-                            indicatorStyle: IndicatorStyle(
-                              width: 40,
-                              height: 40,
-                              indicator:
-                                  _IndicatorExample(number: '${index + 1}'),
-                              drawGap: true,
-                            ),
-                            topLineStyle: LineStyle(
-                              color: Colors.white.withOpacity(0.2),
-                            ),
-                            leftChild: Text(timeEntries[index].startLoc),
-                          );
+                        ? Wrap(
+                      children: [
+                        TimelineTile(
+                          alignment: TimelineAlign.center,
+                          hasIndicator: true,
+                          lineX: 0.1,
+                          isFirst: index == 0,
+                          isLast: index == timeEntries.length - 1,
+                          indicatorStyle: IndicatorStyle(
+                            width: 40,
+                            height: 40,
+                            indicator:
+                            index == 0 ? _Sun(type: Type.Start, number: '${timeEntries[index].lineNumber.toString()}',) : index == timeEntries.length - 1 ? _Sun(type: Type.End, number: '${timeEntries[index].lineNumber.toString()}',) : _IndicatorExample(number: '${timeEntries[index].lineNumber.toString()}'),
+                            drawGap: true,
+                          ),
+                          topLineStyle: LineStyle(
+                            color: Colors.blue.withOpacity(0.7),
+                          ),
+                          leftChild: Text(timeEntries[index].startLoc),
+                        )
+                      ],
+                    )
+                        : Wrap(
+                      children: [
+                      TimelineTile(
+                      alignment: TimelineAlign.center,
+                      hasIndicator: true,
+                      lineX: 0.1,
+                      isFirst: index == 0,
+                      isLast: index == timeEntries.length - 1,
+                      indicatorStyle: IndicatorStyle(
+                        width: 40,
+                        height: 40,
+                        indicator: _IndicatorExample(number: '${timeEntries[index].lineNumber.toString()}'),
+                        drawGap: true,
+                      ),
+                      topLineStyle: LineStyle(
+                        color: Colors.blue.withOpacity(0.7)
+                      ),
+                      rightChild: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(timeEntries[index].startLoc),
+                      ),
+                    )
+                      ],
+                    );
                   },
                   itemCount: timeEntries.length,
                 ),
               ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-class _IndicatorExample extends StatelessWidget {
-  const _IndicatorExample({Key key, this.number}) : super(key: key);
 
+
+class _Sun extends StatelessWidget {
+  final Type type;
   final String number;
+
+
+  _Sun({this.type, this.number});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.fromBorderSide(
-          BorderSide(
-            color: Colors.white.withOpacity(0.2),
-            width: 4,
-          ),
-        ),
-      ),
+    return type == Type.End ? Container(
       child: Center(
         child: Text(
           number,
-          style: const TextStyle(fontSize: 30),
+          style: const TextStyle(fontSize: 20),
         ),
+      ),
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red,
+            blurRadius: 15,
+            spreadRadius: 10,
+          ),
+        ],
+        shape: BoxShape.circle,
+        color: Colors.red,
+      ),
+    ) : Container(
+      child: Center(
+        child: Text(
+          number,
+          style: const TextStyle(fontSize: 18),
+        ),
+      ),
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green,
+            blurRadius: 15,
+            spreadRadius: 10,
+          ),
+        ],
+        shape: BoxShape.circle,
+        color: Colors.green,
       ),
     );
   }
 }
+
+
