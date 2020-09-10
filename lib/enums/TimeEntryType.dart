@@ -1,4 +1,4 @@
-enum Type {
+enum TimeEntryType {
   Start,
   Middle,
   End

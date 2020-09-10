@@ -7,11 +7,15 @@ import 'package:intl/intl.dart';
 
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/enums/TimeEntryType.dart';
 import 'package:waytech/models/Path.dart';
 import 'package:waytech/models/TimeEntry.dart';
+import 'package:waytech/models/TimelineStep.dart';
 import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
+import 'package:waytech/widgets/CustomIndicator.dart';
 import 'package:waytech/widgets/MapIndicator.dart';
+import 'package:waytech/widgets/TimelineChild.dart';
 import 'package:waytech/widgets/input_field.dart';
 import 'package:waytech/widgets/near_station_tile.dart';
 
@@ -165,63 +169,75 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 // Timeline(
                 //     children: timeLineModels, position: TimelinePosition.Center)
 
-              Container(
-                width: mediaSize.width * 0.9,
-                child: ListView.builder(
-                  physics: PageScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return index % 2 == 0
-                        ? Wrap(
-                      children: [
-                        TimelineTile(
-                          alignment: TimelineAlign.center,
-                          hasIndicator: true,
-                          lineX: 0.1,
-                          isFirst: index == 0,
-                          isLast: index == timeEntries.length - 1,
-                          indicatorStyle: IndicatorStyle(
-                            width: 40,
-                            height: 40,
-                            indicator:
-                            index == 0 ? _Sun(type: Type.Start, number: '${timeEntries[index].lineNumber.toString()}',) : index == timeEntries.length - 1 ? _Sun(type: Type.End, number: '${timeEntries[index].lineNumber.toString()}',) : _IndicatorExample(number: '${timeEntries[index].lineNumber.toString()}'),
-                            drawGap: true,
-                          ),
-                          topLineStyle: LineStyle(
-                            color: Colors.blue.withOpacity(0.7),
-                          ),
-                          leftChild: Text(timeEntries[index].startLoc),
-                        )
-                      ],
-                    )
-                        : Wrap(
-                      children: [
-                      TimelineTile(
-                      alignment: TimelineAlign.center,
-                      hasIndicator: true,
-                      lineX: 0.1,
-                      isFirst: index == 0,
-                      isLast: index == timeEntries.length - 1,
-                      indicatorStyle: IndicatorStyle(
-                        width: 40,
-                        height: 40,
-                        indicator: _IndicatorExample(number: '${timeEntries[index].lineNumber.toString()}'),
-                        drawGap: true,
-                      ),
-                      topLineStyle: LineStyle(
-                        color: Colors.blue.withOpacity(0.7)
-                      ),
-                      rightChild: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(timeEntries[index].startLoc),
-                      ),
-                    )
-                      ],
-                    );
-                  },
-                  itemCount: timeEntries.length,
+                Container(
+                  width: mediaSize.width * 0.9,
+                  child: ListView.builder(
+                    physics: PageScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return index % 2 == 0
+                          ? Wrap(
+                              children: [
+                                TimelineTile(
+                                  alignment: TimelineAlign.center,
+                                  hasIndicator: true,
+                                  lineX: 0.1,
+                                  isFirst: index == 0,
+                                  isLast: index == timeEntries.length - 1,
+                                  indicatorStyle: IndicatorStyle(
+                                    width: 40,
+                                    height: 40,
+                                    indicator: CustomIndicator(
+                                      timeEntryType: index == 0
+                                          ? TimeEntryType.Start
+                                          : index == timeEntries.length - 1
+                                              ? TimeEntryType.End
+                                              : TimeEntryType.Middle,
+                                      number:
+                                          '${timeEntries[index].lineNumber.toString()}',
+                                    ),
+                                    drawGap: true,
+                                  ),
+                                  topLineStyle: LineStyle(
+                                    color: Colors.blue.withOpacity(0.7),
+                                  ),
+                                  leftChild: Text(timeEntries[index].startLoc),
+                                )
+                              ],
+                            )
+                          : Wrap(
+                              children: [
+                                TimelineTile(
+                                  alignment: TimelineAlign.center,
+                                  hasIndicator: true,
+                                  lineX: 0.1,
+                                  isFirst: index == 0,
+                                  isLast: index == timeEntries.length - 1,
+                                  indicatorStyle: IndicatorStyle(
+                                    width: 40,
+                                    height: 40,
+                                    indicator: CustomIndicator(
+                                      timeEntryType: index == timeEntries.length - 1
+                                          ? TimeEntryType.End
+                                          : TimeEntryType.Middle,
+                                      number:
+                                      '${timeEntries[index].lineNumber.toString()}',
+                                    ),
+                                    drawGap: true,
+                                  ),
+                                  topLineStyle: LineStyle(
+                                      color: Colors.blue.withOpacity(0.7)),
+                                  rightChild: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(timeEntries[index].startLoc),
+                                  ),
+                                )
+                              ],
+                            );
+                    },
+                    itemCount: timeEntries.length,
+                  ),
                 ),
-              ),
               ],
             ),
           ),
@@ -230,56 +246,3 @@ class _JourneyScreenState extends State<JourneyScreen> {
     );
   }
 }
-
-
-
-class _Sun extends StatelessWidget {
-  final Type type;
-  final String number;
-
-
-  _Sun({this.type, this.number});
-
-  @override
-  Widget build(BuildContext context) {
-    return type == Type.End ? Container(
-      child: Center(
-        child: Text(
-          number,
-          style: const TextStyle(fontSize: 20),
-        ),
-      ),
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red,
-            blurRadius: 15,
-            spreadRadius: 10,
-          ),
-        ],
-        shape: BoxShape.circle,
-        color: Colors.red,
-      ),
-    ) : Container(
-      child: Center(
-        child: Text(
-          number,
-          style: const TextStyle(fontSize: 18),
-        ),
-      ),
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.green,
-            blurRadius: 15,
-            spreadRadius: 10,
-          ),
-        ],
-        shape: BoxShape.circle,
-        color: Colors.green,
-      ),
-    );
-  }
-}
-
-
