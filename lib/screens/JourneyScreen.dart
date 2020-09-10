@@ -6,8 +6,11 @@ import 'package:intl/intl.dart';
 
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:timeline_list/timeline.dart';
+import 'package:timeline_list/timeline_model.dart';
 import 'package:waytech/models/Path.dart';
-import 'package:waytech/providers/PathProvider.dart';
+import 'package:waytech/models/TimeEntry.dart';
+import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/widgets/MapIndicator.dart';
 import 'package:waytech/widgets/input_field.dart';
@@ -22,12 +25,58 @@ class _JourneyScreenState extends State<JourneyScreen> {
   final Map<String, dynamic> info = {};
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
+  List<TimeEntry> timeEntries = [];
+  List<TimelineModel> timeLineModels = [
+    TimelineModel(Placeholder(),
+        position: TimelineItemPosition.random,
+        iconBackground: Colors.redAccent,
+        icon: Icon(Icons.blur_circular)),
+  ];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
+
+  Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
+    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
+        info["start"],
+        info["end"],
+        "11:35:00"
+    );
+
+    print("FETCHED");
+    print(fetchedTimeEntries);
+    List<TimelineModel> timeLines = [
+      TimelineModel(Placeholder(),
+          position: TimelineItemPosition.random,
+          iconBackground: Colors.redAccent,
+          icon: Icon(Icons.blur_circular)),
+    ];
+
+    setState(() {
+      timeEntries = fetchedTimeEntries;
+      timeEntries.forEach((timeEntry) {
+        timeLines.addAll(
+          [TimelineModel(
+            Text(timeEntry.startLoc),
+            icon: Icon(Icons.departure_board)
+          ),
+
+          TimelineModel(
+              Text(timeEntry.endLoc),
+              icon: Icon(Icons.departure_board)
+          )]
+        );
+      });
+
+      timeLineModels = timeLines;
+    });
+
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +100,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                   onMarkerTapped: (result) {
                     fromController.text = result.title;
                     info["from"] = result.title;
+                    info["start"] = result.id;
                   },
 
                 ),
@@ -81,17 +131,21 @@ class _JourneyScreenState extends State<JourneyScreen> {
           validator: null,
           suffixIcon: Icon(Icons.map),
           actionFunction: () async {
-            LocationResult result = await showLocationPicker(
-              context,
-              "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
-              myLocationButtonEnabled: true,
-              layersButtonEnabled: true,
-              countries: ['IR'],
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  maintainState: true,
+                  builder: (context) => MapIndicator(
+                    selectionEnabled: true,
+                    onMarkerTapped: (result) {
+                      toController.text = result.title;
+                      info["to"] = result.title;
+                      info["end"] = result.id;
+                    },
+
+                  ),
+                )
             );
-
-            toController.text = result.address;
-
-            info["to"] = result.address;
 
 //            Navigator.push(
 //              context,
@@ -114,12 +168,11 @@ class _JourneyScreenState extends State<JourneyScreen> {
     ];
 
     final mediaSize = MediaQuery.of(context).size;
-    PathProvider pathProvider =
-        Provider.of<PathProvider>(context, listen: false);
+    TimeEntryProvider timeEntryProvider =
+        Provider.of<TimeEntryProvider>(context, listen: false);
 
     final stationProvider = Provider.of<StationProvider>(context);
 
-    List<Path> paths = [];
 
     return Column(
       children: [
@@ -142,55 +195,58 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
               RaisedButton(
                 onPressed: () {
+                  getTimeEntry(timeEntryProvider);
                   print(DateFormat('HH:mm:ss').format(DateTime.now()));
                 },
 
                 child: Text("find the Path"),
               ),
 
-              Container(
-                width: mediaSize.width * 0.9,
-                child: ListView.builder(
-                  physics: PageScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => Container(
-                    color: Colors.blue.withOpacity(0.4),
-                    child: ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.subdirectory_arrow_left),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text(paths[index].start.title),
-                        ],
-                      ),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.subdirectory_arrow_right),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text(paths[index].end.title),
-                        ],
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.access_time),
-                          SizedBox(
-                            width: 2.0,
-                          ),
-                          Text("${paths[index].weight} min"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  itemCount: paths.length,
-                ),
-              )
+              Timeline(children: timeLineModels, position: TimelinePosition.Left)
+
+//              Container(
+//                width: mediaSize.width * 0.9,
+//                child: ListView.builder(
+//                  physics: PageScrollPhysics(),
+//                  shrinkWrap: true,
+//                  itemBuilder: (context, index) => Container(
+//                    color: Colors.blue.withOpacity(0.4),
+//                    child: ListTile(
+//                      leading: Row(
+//                        mainAxisSize: MainAxisSize.min,
+//                        children: [
+//                          Icon(Icons.subdirectory_arrow_left),
+//                          SizedBox(
+//                            width: 2.0,
+//                          ),
+//                          Text(timeEntries[index].startLoc),
+//                        ],
+//                      ),
+//                      title: Row(
+//                        mainAxisSize: MainAxisSize.min,
+//                        children: [
+//                          Icon(Icons.subdirectory_arrow_right),
+//                          SizedBox(
+//                            width: 2.0,
+//                          ),
+//                          Text(timeEntries[index].endLoc),
+//                        ],
+//                      ),
+//                      trailing: Row(
+//                        mainAxisSize: MainAxisSize.min,
+//                        children: [
+//                          Icon(Icons.access_time),
+//                          SizedBox(
+//                            width: 2.0,
+//                          ),
+//                          Text("${timeEntries[index].arrivalTime} - ${timeEntries[index].departureTime}"),
+//                        ],
+//                      ),
+//                    ),
+//                  ),
+//                  itemCount: timeEntries.length,
+//                ),
+//              )
             ],
           ),
         ),
