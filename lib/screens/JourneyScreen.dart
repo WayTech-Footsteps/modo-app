@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/models/Path.dart';
 import 'package:waytech/providers/PathProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
+import 'package:waytech/widgets/MapIndicator.dart';
 import 'package:waytech/widgets/input_field.dart';
 import 'package:waytech/widgets/near_station_tile.dart';
 
@@ -40,18 +42,34 @@ class _JourneyScreenState extends State<JourneyScreen> {
         label: "From",
         controller: fromController,
         actionFunction: () async {
-          LocationResult result = await showLocationPicker(
-            context,
-            "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
-            myLocationButtonEnabled: true,
-            layersButtonEnabled: true,
-            countries: ['IR'],
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                maintainState: true,
+                builder: (context) => MapIndicator(
+                  selectionEnabled: true,
+                  onMarkerTapped: (result) {
+                    fromController.text = result.title;
+                    info["from"] = result.title;
+                  },
 
+                ),
+              )
           );
 
-          fromController.text = result.address;
-
-          info["from"] = result.address;
+//          LocationResult result = await showLocationPicker(
+//            context,
+//            "AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g",
+//
+//            myLocationButtonEnabled: true,
+//            layersButtonEnabled: true,
+//            countries: ['IR'],
+//
+//          );
+//
+//          fromController.text = result.address;
+//
+//          info["from"] = result.address;
 
         },
       ),
@@ -121,6 +139,15 @@ class _JourneyScreenState extends State<JourneyScreen> {
                   itemCount: inputTiles.length,
                 ),
               ),
+
+              RaisedButton(
+                onPressed: () {
+                  print(DateFormat('HH:mm:ss').format(DateTime.now()));
+                },
+
+                child: Text("find the Path"),
+              ),
+
               Container(
                 width: mediaSize.width * 0.9,
                 child: ListView.builder(

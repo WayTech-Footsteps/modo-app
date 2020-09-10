@@ -17,8 +17,6 @@ class _NearMeScreenState extends State<NearMeScreen> {
     final locationProvider =
         Provider.of<LocationProvider>(context, listen: false);
     await locationProvider.getLocation();
-    print(locationProvider.currentMapLocation.latitude);
-    print(locationProvider.currentMapLocation.longitude);
     super.didChangeDependencies();
   }
 
