@@ -17,13 +17,12 @@ class TimelineChild extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-              padding: EdgeInsets.only(left: 20, top: 100, right: 8),
+              padding: EdgeInsets.only(left: 20, top: 4, right: 8),
               child: Row(children: [
                 Icon(step.iconData),
                 SizedBox(
                   width: 3,
                 ),
-
                 Text("${step.breakTimeDuration.inSeconds} sec")
               ]))
         ],
