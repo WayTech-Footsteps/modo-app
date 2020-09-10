@@ -47,8 +47,39 @@ class TimeEntryProvider with ChangeNotifier {
     print(convertedTimeEntries);
 
     return convertedTimeEntries;
-
-
-
   }
+
+  Future<List<TimeEntry>> getIncomingLines(int stationId, String time) async {
+    final response = await http.post(
+      ServerConfig.IncomingLines,
+      body: json.encode({
+        "station": stationId,
+        "time": time,
+      }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    );
+
+    print(response.body);
+
+    List<Map<String, dynamic>> incomingLinesEntries = List<Map<String, dynamic>>.from(json.decode(response.body));
+
+    List<TimeEntry> convertedLineEntries = [];
+
+    incomingLinesEntries.forEach((timeEntry) {
+      convertedLineEntries.add(TimeEntry.fromJson(timeEntry));
+    });
+
+
+
+    print("converted");
+    print(convertedLineEntries);
+
+    return convertedLineEntries;
+  }
+
+
+
+
 }

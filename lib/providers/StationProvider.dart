@@ -8,7 +8,9 @@ import 'package:waytech/enums/place_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:waytech/models/Place.dart';
 import 'package:waytech/models/Station.dart';
+import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/providers/LocationProvider.dart';
+import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/server_config/server_config.dart';
 
 class StationProvider with ChangeNotifier {
@@ -77,6 +79,8 @@ class StationProvider with ChangeNotifier {
       List<Map<String, dynamic>>.from(json.decode(response.body));
       final locationProvider =
       Provider.of<LocationProvider>(context, listen: false);
+      final timeEntryProvider = Provider.of<TimeEntryProvider>(context, listen: false);
+
       allStations.forEach((currStation) {
         Station station = Station.fromJson(currStation);
         print("statuon");
@@ -90,11 +94,21 @@ class StationProvider with ChangeNotifier {
         station.distance = dist.toInt();
 //        station.distance = distance.as(LengthUnit.Meter,
 //            new LatLng(station.latitude, station.longitude), locationProvider.currentMapLocation);
-
         res_stations.add(station);
+
+
       });
       print("here");
+      for (Station station in res_stations) {
+        List<TimeEntry> stationIncomingLines = await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
+        station.incomingLines = stationIncomingLines;
+      }
+
     }
+
+
+
+    res_stations.sort((a, b) => a.distance.compareTo(b.distance));
 
     List<String> encodedFavStations = prefs.getStringList("favStations");
 
@@ -113,6 +127,7 @@ class StationProvider with ChangeNotifier {
     stations = res_stations;
     dataFetched = true;
     notifyListeners();
+    print("res_stations");
     print(res_stations);
 
     return res_stations;

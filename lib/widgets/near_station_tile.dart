@@ -64,24 +64,22 @@ class _NearStationTileState extends State<NearStationTile> {
           ],
         ),
       ),
-      children: [
-        Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("21"),
-                ),
+      children: widget.station.incomingLines.map((e) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            leading: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red,
               ),
-              title: Text("Library"),
-              trailing: Text(DateFormat('HH:mm').format(DateTime.now())),
-            ))
-      ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(e.lineNumber.toString()),
+              ),
+            ),
+            title: Text(e.startLoc),
+            trailing: Text(e.departureTime),
+          ))).toList()
     );
   }
 }
