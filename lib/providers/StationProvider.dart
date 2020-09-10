@@ -10,6 +10,7 @@ import 'package:waytech/server_config/server_config.dart';
 
 class StationProvider with ChangeNotifier {
   List<Station> stations = [];
+  bool dataFetched = false;
 
   List<Station> favStations = [];
 
@@ -58,10 +59,8 @@ class StationProvider with ChangeNotifier {
 
   Future<List<Station>> getStations() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    List<Station> res_stations = [];
     if (stations.isEmpty || stations == null) {
-      print("here");
-      print(ServerConfig.GetStations);
       final response = await http.get(
         ServerConfig.GetStations,
         headers: {
@@ -74,7 +73,7 @@ class StationProvider with ChangeNotifier {
           List<Map<String, dynamic>>.from(json.decode(response.body));
       allStations.forEach((currStation) {
         Station station = Station.fromJson(currStation);
-        stations.add(station);
+        res_stations.add(station);
       });
     }
 
@@ -85,22 +84,19 @@ class StationProvider with ChangeNotifier {
     }
 
     if (encodedFavStations != null) {
-      stations.forEach((station) {
+      res_stations.forEach((station) {
         if (encodedFavStations.contains(station.id.toString())) {
           station.starred = true;
           favStations.add(station);
         }
       });
     }
-
+    stations = res_stations;
+    dataFetched = true;
     notifyListeners();
+    print(res_stations);
 
-    print(stations);
-
-    return stations;
-
-//    favStations = decodedFavStations;
-//    return decodedFavStations;
+    return res_stations;
   }
 
   Future<List<Station>> getFavorites() async {

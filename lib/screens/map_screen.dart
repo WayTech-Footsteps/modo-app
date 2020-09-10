@@ -38,7 +38,6 @@ class _MapScreenState extends State<MapScreen> {
 
   void setMapPins(StationProvider stationProvider) {
     setState(() {
-      // source pin
       stationProvider.stations.forEach((station) {
         _markers.add(Marker(
             markerId: MarkerId(station.id.toString()),
@@ -60,8 +59,8 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final StationProvider stationProvider = Provider.of(context, listen: false);
-    return initialPosition == null
+    final StationProvider stationProvider = Provider.of(context);
+    return initialPosition == null || stationProvider.dataFetched == false
         ? Center(
             child: CircularProgressIndicator(),
           )
@@ -72,6 +71,7 @@ class _MapScreenState extends State<MapScreen> {
             myLocationButtonEnabled: true,
             mapToolbarEnabled: true,
             onMapCreated: (GoogleMapController controller) {
+              print("object");
               setMapPins(stationProvider);
               _controller.complete(controller);
             },
