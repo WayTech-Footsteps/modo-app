@@ -83,7 +83,7 @@ class _MapIndicatorState extends State<MapIndicator> {
           _markers.add(Marker(
               markerId: MarkerId("poi" + poi.id.toString()),
               position: LatLng(poi.longitude, poi.latitude),
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)));
+              icon: BitmapDescriptor.defaultMarkerWithHue(42)));
         });
       }
 
@@ -100,7 +100,7 @@ class _MapIndicatorState extends State<MapIndicator> {
     getPOIs();
     BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: 16/9, size: Size(50, 50)),
-        'lib/assets/bus-stop.png').then((onValue) {
+        'lib/assets/bus_stop_yellow.png').then((onValue) {
       pinLocationIcon = onValue;
     });
   }

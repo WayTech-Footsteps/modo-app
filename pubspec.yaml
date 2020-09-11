@@ -60,6 +60,7 @@ flutter:
     - lib/assets/splash_icon.png
     - lib/assets/bus-stop.png
     - lib/assets/LogoMakr_5kyBYK.png
+    - lib/assets/bus_stop_yellow.png
   #     - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
