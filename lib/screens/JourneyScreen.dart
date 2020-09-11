@@ -81,14 +81,19 @@ class _JourneyScreenState extends State<JourneyScreen> {
               context,
               MaterialPageRoute(
                 maintainState: true,
-                builder: (context) => MapIndicator(
-                  selectionEnabled: true,
-                  onMarkerTapped: (result) {
-                    fromController.text = result.title;
-                    info["from"] = result.title;
-                    info["start"] = result.id;
-                  },
-                ),
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: Text("Choose Origin..."),
+                  ),
+                  body: MapIndicator(
+                    selectionEnabled: true,
+                    onMarkerTapped: (result) {
+                      fromController.text = result.title;
+                      info["from"] = result.title;
+                      info["start"] = result.id;
+                    },
+                  ),
+                )
               ));
 
 //          LocationResult result = await showLocationPicker(
@@ -118,14 +123,19 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 context,
                 MaterialPageRoute(
                   maintainState: true,
-                  builder: (context) => MapIndicator(
-                    selectionEnabled: true,
-                    onMarkerTapped: (result) {
-                      toController.text = result.title;
-                      info["to"] = result.title;
-                      info["end"] = result.id;
-                    },
-                  ),
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: Text("Choose Destination..."),
+                    ),
+                    body: MapIndicator(
+                      selectionEnabled: true,
+                      onMarkerTapped: (result) {
+                        toController.text = result.title;
+                        info["to"] = result.title;
+                        info["end"] = result.id;
+                      },
+                    ),
+                  )
                 ));
 
 //            Navigator.push(
