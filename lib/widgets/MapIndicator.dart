@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -13,15 +14,15 @@ class MapIndicator extends StatefulWidget {
   final Function onMarkerTapped;
   final bool showPOIs;
 
-
-  MapIndicator({this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false});
+  MapIndicator(
+      {this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false});
 
   @override
   _MapIndicatorState createState() => _MapIndicatorState();
 }
 
 class _MapIndicatorState extends State<MapIndicator> {
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _controller;
   Set<Marker> _markers = {};
   BitmapDescriptor pinLocationIcon;
   List<POI> placesOfInterest = [];
@@ -29,6 +30,7 @@ class _MapIndicatorState extends State<MapIndicator> {
   CameraPosition initialPosition;
   var location = new Location();
   LocationData currentMapLocation;
+  String _mapStyle;
 
   Future _getLocation() async {
     try {
@@ -39,11 +41,11 @@ class _MapIndicatorState extends State<MapIndicator> {
         if (this.mounted) {
           setState(() {
             initialPosition = CameraPosition(
-                target: LatLng(currentLocation.latitude, currentLocation.longitude),
+                target:
+                    LatLng(currentLocation.latitude, currentLocation.longitude),
                 zoom: 14.567);
           });
         }
-
 
         return LatLng(currentLocation.latitude, currentLocation.longitude);
       });
@@ -57,8 +59,6 @@ class _MapIndicatorState extends State<MapIndicator> {
     final poiProvider = Provider.of<POIProvider>(context, listen: false);
     placesOfInterest = await poiProvider.getPOIs();
   }
-
-
 
   void setMapPins(StationProvider stationProvider) {
     setState(() {
@@ -75,7 +75,8 @@ class _MapIndicatorState extends State<MapIndicator> {
           },
           markerId: MarkerId("station" + station.id.toString()),
           position: LatLng(station.longitude, station.latitude),
-          icon: pinLocationIcon,));
+          icon: pinLocationIcon,
+        ));
       });
 
       if (widget.showPOIs) {
@@ -89,7 +90,6 @@ class _MapIndicatorState extends State<MapIndicator> {
 
       // destination pin
     });
-
   }
 
   @override
@@ -99,31 +99,38 @@ class _MapIndicatorState extends State<MapIndicator> {
     _getLocation();
     getPOIs();
     BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 16/9, size: Size(50, 50)),
-        'lib/assets/bus_stop_yellow.png').then((onValue) {
+            ImageConfiguration(devicePixelRatio: 16 / 9, size: Size(50, 50)),
+            'lib/assets/bus_stop_yellow.png')
+        .then((onValue) {
       pinLocationIcon = onValue;
     });
+    rootBundle.loadString('lib/assets/map_style.txt').then((string) {
+      print(string);
+      _mapStyle = string;
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     final StationProvider stationProvider = Provider.of(context);
     return initialPosition == null || stationProvider.dataFetched == false
         ? Center(
-      child: CircularProgressIndicator(),
-    )
+            child: CircularProgressIndicator(),
+          )
         : GoogleMap(
-
-      mapType: MapType.hybrid,
-      initialCameraPosition: initialPosition,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: true,
-      mapToolbarEnabled: true,
-      onMapCreated: (GoogleMapController controller) {
-        print("object");
-        setMapPins(stationProvider);
-        _controller.complete(controller);
-      },
-      markers: _markers,
-    );
+            initialCameraPosition: initialPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            mapToolbarEnabled: true,
+            onMapCreated: (GoogleMapController controller) {
+              setMapPins(stationProvider);
+              _controller = controller;
+              print(_mapStyle);
+              setState(() {
+                _controller.setMapStyle(_mapStyle);
+              });
+            },
+            markers: _markers,
+          );
   }
 }
