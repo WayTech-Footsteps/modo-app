@@ -13,9 +13,10 @@ class MapIndicator extends StatefulWidget {
   final bool selectionEnabled;
   final Function onMarkerTapped;
   final bool showPOIs;
+  final bool showInfoWindow;
 
   MapIndicator(
-      {this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false});
+      {this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false, this.showInfoWindow: false});
 
   @override
   _MapIndicatorState createState() => _MapIndicatorState();
@@ -73,6 +74,9 @@ class _MapIndicatorState extends State<MapIndicator> {
             print(station.longitude);
             print(station.latitude);
           },
+          infoWindow: widget.showInfoWindow ? InfoWindow(
+            title: station.title
+          ) : InfoWindow(),
           markerId: MarkerId("station" + station.id.toString()),
           position: LatLng(station.longitude, station.latitude),
           icon: pinLocationIcon,
@@ -84,6 +88,9 @@ class _MapIndicatorState extends State<MapIndicator> {
           _markers.add(Marker(
               markerId: MarkerId("poi" + poi.id.toString()),
               position: LatLng(poi.longitude, poi.latitude),
+              infoWindow: widget.showInfoWindow ? InfoWindow(
+                  title: poi.title
+              ) : InfoWindow(),
               icon: BitmapDescriptor.defaultMarkerWithHue(42)));
         });
       }

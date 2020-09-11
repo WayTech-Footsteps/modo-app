@@ -23,10 +23,10 @@ class MapScreen extends StatelessWidget {
       onMarkerTapped: () => {},
       showPOIs: true,
       showInfoWindow: true,
-      mapMethod: MapMethod.OnMap,
-      changeTab: changeTab,
-      changeJourneyInfo: changeJourneyInfo,
-      journeyScreen: journeyScreen,
+//      mapMethod: MapMethod.OnMap,
+//      changeTab: changeTab,
+//      changeJourneyInfo: changeJourneyInfo,
+//      journeyScreen: journeyScreen,
     );
   }
 }

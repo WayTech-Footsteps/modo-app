@@ -116,6 +116,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                         ),
                         body: MapIndicator(
                           selectionEnabled: true,
+                          showInfoWindow: false,
                           onMarkerTapped: (result) {
                             fromController.text = result.title;
                             info["from"] = result.title;
@@ -158,6 +159,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           ),
                           body: MapIndicator(
                             selectionEnabled: true,
+                            showInfoWindow: false,
                             onMarkerTapped: (result) {
                               toController.text = result.title;
                               info["to"] = result.title;
@@ -280,7 +282,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           rightChild: TimelineChild(
                             type: TimeEntryType.Start,
                             step: TimelineStep(
-                              departureIcon: Icons.departure_board,
+                              departureIcon: Icons.subdirectory_arrow_right,
                               departureTime: timeEntries[index].departureTime,
                             ),
                           ),
@@ -314,7 +316,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           rightChild: TimelineChild(
                             type: TimeEntryType.End,
                             step: TimelineStep(
-                              arrivalIcon: Icons.access_time,
+                              arrivalIcon: Icons.subdirectory_arrow_left,
                               arrivalTime: timeEntries[index - 1].arrivalTime,
                             ),
                           ),
@@ -330,6 +332,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             width: 40,
                             height: 40,
                             indicator: CustomIndicator(
+                              busLineChange: timeEntries[index].lineNumber != timeEntries[index - 1].lineNumber,
                               timeEntryType: TimeEntryType.Middle,
                               number:
                                   '${timeEntries[index].lineNumber.toString()}',
@@ -355,9 +358,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                                 timeEntries[index].departureTime,
                               ),
                               breakTimeIcon: Icons.local_cafe,
-                              departureIcon: Icons.departure_board,
+                              departureIcon: Icons.subdirectory_arrow_right,
                               departureTime: timeEntries[index].departureTime,
-                              arrivalIcon: Icons.access_time,
+                              arrivalIcon: Icons.subdirectory_arrow_left,
                               arrivalTime: timeEntries[index - 1].arrivalTime,
                             ),
                           ),
