@@ -77,37 +77,41 @@ class StationProvider with ChangeNotifier {
       final Distance distance = new Distance();
 
       List<Map<String, dynamic>> allStations =
-      List<Map<String, dynamic>>.from(json.decode(response.body));
+          List<Map<String, dynamic>>.from(json.decode(response.body));
       final locationProvider =
-      Provider.of<LocationProvider>(context, listen: false);
-      final timeEntryProvider = Provider.of<TimeEntryProvider>(context, listen: false);
+          Provider.of<LocationProvider>(context, listen: false);
+      final timeEntryProvider =
+          Provider.of<TimeEntryProvider>(context, listen: false);
+      await locationProvider.getCurrentLocation();
 
       allStations.forEach((currStation) {
         Station station = Station.fromJson(currStation);
-        print("statuon");
-        print(locationProvider.currentMapLocation);
+        // print(locationProvider.currentMapLocation);
 //        station.distance = distance.as(LengthUnit.Meter,
 //            new LatLng(station.latitude, station.longitude),
 //            locationProvider.currentMapLocation);
-        num dist = distance.as(LengthUnit.Meter,
+        // print(station);
+        // print(new LatLng(station.longitude, station.latitude));
+        num dist = distance.as(
+            LengthUnit.Meter,
             new LatLng(station.latitude, station.longitude),
             locationProvider.currentMapLocation);
-        station.distance = dist.toInt();
+        station.distance = dist.toDouble().roundToDouble();
+
+        var dist_to_double = double.parse(station.distance.toString());
+        station.distance = dist_to_double / 1000;
+
 //        station.distance = distance.as(LengthUnit.Meter,
 //            new LatLng(station.latitude, station.longitude), locationProvider.currentMapLocation);
         res_stations.add(station);
-
-
       });
       print("here");
       for (Station station in res_stations) {
-        List<TimeEntry> stationIncomingLines = await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
+        List<TimeEntry> stationIncomingLines =
+            await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
         station.incomingLines = stationIncomingLines;
       }
-
     }
-
-
 
     res_stations.sort((a, b) => a.distance.compareTo(b.distance));
 

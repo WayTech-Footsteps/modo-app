@@ -3,10 +3,11 @@ import 'package:waytech/models/TimeEntry.dart';
 
 class Station extends Place {
   bool starred;
-  int distance;
+  double distance;
   List<TimeEntry> incomingLines = [];
 
-  Station({id, title, longitude, latitude, this.starred: false, this.incomingLines})
+  Station(
+      {id, title, longitude, latitude, this.starred: false, this.incomingLines})
       : super(id: id, title: title, longitude: longitude, latitude: latitude);
 
   factory Station.fromJson(Map<String, dynamic> parsedJson) {
