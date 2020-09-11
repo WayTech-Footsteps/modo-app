@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:intl/intl.dart';
-
-//import 'package:google_maps_place_picker/google_maps_place_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:waytech/enums/TimeEntryType.dart';
-import 'package:waytech/models/Path.dart';
 import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/models/TimelineStep.dart';
-import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
+import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/widgets/CustomIndicator.dart';
 import 'package:waytech/widgets/DateTimePicker.dart';
 import 'package:waytech/widgets/MapIndicator.dart';
 import 'package:waytech/widgets/TimelineChild.dart';
 import 'package:waytech/widgets/input_field.dart';
-import 'package:waytech/widgets/near_station_tile.dart';
 
 class JourneyScreen extends StatefulWidget {
   @override
@@ -44,25 +37,22 @@ class _JourneyScreenState extends State<JourneyScreen> {
   Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
     if (info["start"] == null || info["end"] == null || info["time"] == null) {
       Scaffold.of(context).hideCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(
-          SnackBar(
-
-            content: Text(
-              'Fill All the Fields Above!',
-            ),
-            duration: Duration(seconds: 2),
-            action: SnackBarAction(
-              label: 'Discard',
-              onPressed: () {
-                Scaffold.of(context).hideCurrentSnackBar();
-              },
-              textColor: Colors.deepOrange,
-            ),
-          )
-      );
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'Fill All the Fields Above!',
+        ),
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'Discard',
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          },
+          textColor: Colors.deepOrange,
+        ),
+      ));
     } else {
-      List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
-          info["start"], info["end"], info["time"]);
+      List<TimeEntry> fetchedTimeEntries = await timeEntryProvider
+          .getTimeEntries(info["start"], info["end"], info["time"]);
 
 //      _btnController.reset();
 
@@ -75,7 +65,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
     }
 
     _btnController.reset();
-
   }
 
   Duration calculateBreakTime(
@@ -196,7 +185,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //            );
           },
           label: "To"),
-
       DateTimePicker(
         label: "Choose Time",
         onChanged: (v) {
@@ -204,9 +192,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
           print("chosen time");
           print(info["time"]);
         },
-
-
-
       )
     ];
 
@@ -238,12 +223,14 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
                 RoundedLoadingButton(
                   borderRadius: 5,
+                  width: 170,
                   controller: _btnController,
                   onPressed: () => getTimeEntry(timeEntryProvider),
                   elevation: 5,
+                  color: Theme.of(context).primaryColor,
                   child: Text(
                     "Find the Journey",
-                    style: Theme.of(context).textTheme.button,
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
 
@@ -282,7 +269,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             drawGap: true,
                           ),
                           topLineStyle: LineStyle(
-                            color: Colors.blue.withOpacity(0.7),
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
                           leftChild: Text(
                             timeEntries[index].startLoc,
@@ -315,7 +303,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             drawGap: true,
                           ),
                           topLineStyle: LineStyle(
-                            color: Colors.blue.withOpacity(0.7),
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
                           leftChild: Text(
                             timeEntries[index].startLoc,
@@ -348,7 +337,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             drawGap: true,
                           ),
                           topLineStyle: LineStyle(
-                            color: Colors.blue.withOpacity(0.7),
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
                           leftChild: Text(
                             timeEntries[index].startLoc,

@@ -11,7 +11,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="waytech"
+        android:label="Modo"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
                    android:value="AIzaSyDvBDqtpGE5l6IZdm52YIFAf0CSMfr6G6g"/>
