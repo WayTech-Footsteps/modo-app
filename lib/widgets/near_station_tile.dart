@@ -23,63 +23,73 @@ class _NearStationTileState extends State<NearStationTile> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Container(
-        child: Row(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(FontAwesomeIcons.bus),
             SizedBox(
               width: 20.0,
             ),
-            Text(widget.station.title),
+            FittedBox(
+                fit: BoxFit.contain,
+                child: Container(
+                  child: Text(
+                    widget.station.title,
+                    textAlign: TextAlign.center,
+                  ),
+                  width: 140.0,
+                )),
           ],
         ),
-      ),
-      trailing: Container(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.near_me),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text("${widget.station.distance.toString()} m")
-              ],
-            ),
-            Consumer<StationProvider>(
-              builder: (context, station, child) => IconButton(
-                icon: Icon(
-                  widget.station.starred
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Colors.red,
-                ),
-                onPressed: () async {
-                  station.toggleFavorite(widget.station.id);
-                },
+        trailing: Container(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.near_me),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(widget.station.distance >= 1.0
+                      ? "${widget.station.distance.toString()} km"
+                      : "${(widget.station.distance * 1000).toString()} m")
+                ],
               ),
-            )
-          ],
+              Consumer<StationProvider>(
+                builder: (context, station, child) => IconButton(
+                  icon: Icon(
+                    widget.station.starred
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  onPressed: () async {
+                    station.toggleFavorite(widget.station.id);
+                  },
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      children: widget.station.incomingLines.map((e) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            leading: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.red,
-              ),
-              child: Padding(
+        children: widget.station.incomingLines
+            .map((e) => Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(e.lineNumber.toString()),
-              ),
-            ),
-            title: Text(e.startLoc),
-            trailing: Text(e.departureTime),
-          ))).toList()
-    );
+                child: ListTile(
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(e.lineNumber.toString()),
+                    ),
+                  ),
+                  title: Text(e.startLoc),
+                  trailing: Text(e.arrivalTime),
+                )))
+            .toList());
   }
 }
