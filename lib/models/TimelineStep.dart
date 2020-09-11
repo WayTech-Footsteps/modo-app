@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
 class TimelineStep {
-  final String hour;
+  final String departureTime;
+  final String arrivalTime;
   final String message;
   final Duration breakTimeDuration;
-  final IconData iconData;
+  final IconData breakTimeIcon;
+  final IconData departureIcon;
+  final IconData arrivalIcon;
+
 
   TimelineStep(
-      {this.hour, this.message, this.breakTimeDuration, this.iconData});
+      {this.departureTime, this.arrivalTime, this.message, this.breakTimeDuration, this.breakTimeIcon, this.departureIcon, this.arrivalIcon});
 
-  bool get hasHour => hour != null && hour.isNotEmpty;
+  bool get hasHour => departureTime != null && departureTime.isNotEmpty;
 }

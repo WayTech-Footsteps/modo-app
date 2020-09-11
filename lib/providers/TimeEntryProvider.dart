@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:waytech/models/Path.dart';
 import 'package:http/http.dart' as http;
 import 'package:waytech/models/TimeEntry.dart';
@@ -36,6 +36,7 @@ class TimeEntryProvider with ChangeNotifier {
       finalTimeEntry = TimeEntry(
         startLoc: lastEntry.endLoc,
         lineNumber: lastEntry.lineNumber,
+        arrivalTime: lastEntry.arrivalTime
       );
 
       convertedTimeEntries.add(finalTimeEntry);

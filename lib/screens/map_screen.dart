@@ -12,6 +12,7 @@ class MapScreen extends StatelessWidget {
     return MapIndicator(
       selectionEnabled: false,
       onMarkerTapped: () => {},
+      showPOIs: true,
     );
   }
 }

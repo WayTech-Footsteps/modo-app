@@ -12,6 +12,7 @@ class InputField extends StatefulWidget {
   final int maxLine;
   final Icon suffixIcon;
   final TextEditingController controller;
+  final bool readOnly;
 
   const InputField({Key key,
     @required this.validator,
@@ -24,6 +25,7 @@ class InputField extends StatefulWidget {
     this.maxLine = 1,
     this.suffixIcon,
     this.controller,
+    this.readOnly,
     this.actionFunction})
       : super(key: key);
 
@@ -50,6 +52,10 @@ class _InputFieldState extends State<InputField> {
           widget.actionFunction();
         }
       },
+      onTap: () {
+        widget.actionFunction();
+      },
+      readOnly: widget.readOnly,
       decoration: InputDecoration(
           labelText: widget.label,
           hintText: widget.placeHolder == null ? '' : widget.placeHolder,

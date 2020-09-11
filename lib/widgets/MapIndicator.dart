@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/models/POI.dart';
+import 'package:waytech/providers/POIProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 
 class MapIndicator extends StatefulWidget {
   final bool selectionEnabled;
   final Function onMarkerTapped;
+  final bool showPOIs;
 
 
-  MapIndicator({this.selectionEnabled, this.onMarkerTapped});
+  MapIndicator({this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false});
 
   @override
   _MapIndicatorState createState() => _MapIndicatorState();
@@ -21,6 +24,7 @@ class _MapIndicatorState extends State<MapIndicator> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = {};
   BitmapDescriptor pinLocationIcon;
+  List<POI> placesOfInterest = [];
 
   CameraPosition initialPosition;
   var location = new Location();
@@ -49,6 +53,12 @@ class _MapIndicatorState extends State<MapIndicator> {
     }
   }
 
+  Future getPOIs() async {
+    final poiProvider = Provider.of<POIProvider>(context, listen: false);
+    placesOfInterest = await poiProvider.getPOIs();
+  }
+
+
 
   void setMapPins(StationProvider stationProvider) {
     setState(() {
@@ -63,13 +73,23 @@ class _MapIndicatorState extends State<MapIndicator> {
             print(station.longitude);
             print(station.latitude);
           },
-          markerId: MarkerId(station.id.toString()),
+          markerId: MarkerId("station" + station.id.toString()),
           position: LatLng(station.longitude, station.latitude),
           icon: pinLocationIcon,));
       });
 
+      if (widget.showPOIs) {
+        placesOfInterest.forEach((poi) {
+          _markers.add(Marker(
+              markerId: MarkerId("poi" + poi.id.toString()),
+              position: LatLng(poi.longitude, poi.latitude),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)));
+        });
+      }
+
       // destination pin
     });
+
   }
 
   @override
@@ -77,9 +97,10 @@ class _MapIndicatorState extends State<MapIndicator> {
     // TODO: implement initState
     super.initState();
     _getLocation();
+    getPOIs();
     BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: 16/9, size: Size(50, 50)),
-        'lib/assets/splash_icon.png').then((onValue) {
+        'lib/assets/bus-stop.png').then((onValue) {
       pinLocationIcon = onValue;
     });
   }
