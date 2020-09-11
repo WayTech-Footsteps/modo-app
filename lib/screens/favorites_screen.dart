@@ -1,3 +1,4 @@
+import 'package:empty_widget/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/providers/StationProvider.dart';
@@ -14,7 +15,16 @@ class FavoritesScreen extends StatelessWidget {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : ListView.builder(
+              : snapshot.data.isEmpty ? Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.favorite_border, size: 70.0),
+                  SizedBox(height: 20,),
+                  Text("No Favorites Added", style: TextStyle(fontSize: 25.0),),
+                ],
+              )) : ListView.builder(
                   itemBuilder: (context, index) => NearStationTile(
                         station: snapshot.data[index],
                       ),

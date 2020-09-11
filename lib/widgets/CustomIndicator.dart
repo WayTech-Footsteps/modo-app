@@ -12,7 +12,7 @@ class CustomIndicator extends StatelessWidget {
 
   Widget _buildIndicator(BuildContext context) {
     Widget indicator;
-    if (timeEntryType == TimeEntryType.Start) {
+    if (timeEntryType == TimeEntryType.Start || timeEntryType == TimeEntryType.End) {
       indicator = Container(
         child: Center(
           child: Text(
@@ -43,26 +43,6 @@ class CustomIndicator extends StatelessWidget {
             number,
             style: const TextStyle(fontSize: 20),
           ),
-        ),
-      );
-    } else if (timeEntryType == TimeEntryType.End) {
-      indicator = Container(
-        child: Center(
-          child: Text(
-            number,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ),
-        decoration: const BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.green,
-//              blurRadius: 5,
-//              spreadRadius: 2,
-            ),
-          ],
-          shape: BoxShape.circle,
-          color: Colors.green,
         ),
       );
     }

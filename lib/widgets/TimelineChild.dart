@@ -24,17 +24,19 @@ class TimelineChild extends StatelessWidget {
           ])));
     }
 
-    if (type == TimeEntryType.Middle) {
-      widgets.add(Padding(
-          padding: EdgeInsets.only(left: 20, top: 4, right: 8),
-          child: Row(children: [
-            Icon(step.breakTimeIcon),
-            SizedBox(
-              width: 3,
-            ),
-            Text("${step.breakTimeDuration.inSeconds} sec")
-          ])));
-    }
+    // TODO: break time can be added, but is redundant as arrival and departure time is provided
+
+//    if (type == TimeEntryType.Middle) {
+//      widgets.add(Padding(
+//          padding: EdgeInsets.only(left: 20, top: 4, right: 8),
+//          child: Row(children: [
+//            Icon(step.breakTimeIcon),
+//            SizedBox(
+//              width: 3,
+//            ),
+//            Text(step.breakTimeDuration.inMinutes <= 0 ? "${step.breakTimeDuration.inSeconds} sec" : "${step.breakTimeDuration.inMinutes} min")
+//          ])));
+//    }
 
     if (type != TimeEntryType.End) {
       widgets.add(Padding(

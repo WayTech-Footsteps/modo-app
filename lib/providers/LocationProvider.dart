@@ -16,8 +16,6 @@ class LocationProvider with ChangeNotifier {
 
   Future getLocation() async {
     location.onLocationChanged.listen((LocationData currentLocation) {
-      print('Latitude:${currentLocation.latitude}');
-      print('Longitude:${currentLocation.longitude}');
       currentMapLocation =
           LatLng(currentLocation.longitude, currentLocation.latitude);
       notifyListeners();

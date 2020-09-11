@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,8 @@ class MapScreen extends StatelessWidget {
       showPOIs: true,
       showInfoWindow: true,
 //      mapMethod: MapMethod.OnMap,
-//      changeTab: changeTab,
+      changeTab: changeTab,
+      onMap: true,
 //      changeJourneyInfo: changeJourneyInfo,
 //      journeyScreen: journeyScreen,
     );

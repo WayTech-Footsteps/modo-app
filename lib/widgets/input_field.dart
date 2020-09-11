@@ -62,7 +62,6 @@ class _InputFieldState extends State<InputField> {
           suffixIcon: IconButton(
             icon: widget.suffixIcon,
             onPressed: () {
-              print("here");
               widget.actionFunction();
             },
           )

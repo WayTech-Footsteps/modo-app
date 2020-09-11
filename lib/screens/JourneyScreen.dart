@@ -6,6 +6,7 @@ import 'package:timeline_tile/timeline_tile.dart';
 import 'package:waytech/enums/TimeEntryType.dart';
 import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/models/TimelineStep.dart';
+import 'package:waytech/providers/JourneyInfoProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/widgets/CustomIndicator.dart';
@@ -27,6 +28,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
   final RoundedLoadingButtonController _btnController =
       new RoundedLoadingButtonController();
+
 
   @override
   void initState() {
@@ -56,8 +58,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
 
 //      _btnController.reset();
 
-      print("FETCHED");
-      print(fetchedTimeEntries);
 
       setState(() {
         timeEntries = fetchedTimeEntries;
@@ -72,14 +72,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
     DateTime prevArrTime = DateFormat('HH:mm:ss').parse(previousArrivalTime);
     DateTime currDepTime = DateFormat('HH:mm:ss').parse(currentDepartureTime);
 
-    print(previousArrivalTime + currentDepartureTime);
 
     Duration breakTimeDuration = currDepTime.difference(prevArrTime);
 
-    print("diff: " +
-        breakTimeDuration.inMinutes.toString() +
-        " " +
-        breakTimeDuration.inSeconds.toString());
     return breakTimeDuration;
   }
 
@@ -94,6 +89,16 @@ class _JourneyScreenState extends State<JourneyScreen> {
   @override
   Widget build(BuildContext context) {
     final scaffold = Scaffold.of(context);
+    final journeyProvider = Provider.of<JourneyInfoProvider>(context);
+    if (journeyProvider.journeyInfo["start"] != null) {
+      fromController.text = journeyProvider.journeyInfo["start"].title;
+      info["start"] = journeyProvider.journeyInfo["start"].id;
+    }
+
+    if (journeyProvider.journeyInfo["end"] != null) {
+      toController.text = journeyProvider.journeyInfo["end"].title;
+      info["end"] = journeyProvider.journeyInfo["end"].id;
+    }
 
     final List<Widget> inputTiles = [
       InputField(
@@ -191,8 +196,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
         label: "Choose Time",
         onChanged: (v) {
           info["time"] = v;
-          print("chosen time");
-          print(info["time"]);
         },
       )
     ];
@@ -274,10 +277,13 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             color:
                                 Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
-                          leftChild: Text(
-                            timeEntries[index].startLoc,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                          leftChild: Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(
+                              timeEntries[index].startLoc,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           rightChild: TimelineChild(
                             type: TimeEntryType.Start,
@@ -308,10 +314,13 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             color:
                                 Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
-                          leftChild: Text(
-                            timeEntries[index].startLoc,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                          leftChild: Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(
+                              timeEntries[index].startLoc,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           rightChild: TimelineChild(
                             type: TimeEntryType.End,
@@ -343,12 +352,13 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             color:
                                 Theme.of(context).primaryColor.withOpacity(0.7),
                           ),
-                          leftChild: Text(
-                            timeEntries[index].startLoc,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                          leftChild: Padding(
+                            padding: const EdgeInsets.only(right: 2.0),
+                            child: Text(
+                              timeEntries[index].startLoc,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           rightChild: TimelineChild(
                             type: TimeEntryType.Middle,

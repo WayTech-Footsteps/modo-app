@@ -66,51 +66,49 @@ class StationProvider with ChangeNotifier {
   Future<List<Station>> getStations(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<Station> res_stations = [];
-    if (stations.isEmpty || stations == null) {
-      final response = await http.get(
-        ServerConfig.GetStations,
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-      final Distance distance = new Distance();
+    favStations = [];
+    final response = await http.get(
+      ServerConfig.GetStations,
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+    final Distance distance = new Distance();
 
-      List<Map<String, dynamic>> allStations =
-          List<Map<String, dynamic>>.from(json.decode(response.body));
-      final locationProvider =
-          Provider.of<LocationProvider>(context, listen: false);
-      final timeEntryProvider =
-          Provider.of<TimeEntryProvider>(context, listen: false);
-      await locationProvider.getCurrentLocation();
+    List<Map<String, dynamic>> allStations =
+    List<Map<String, dynamic>>.from(json.decode(response.body));
+    final locationProvider =
+    Provider.of<LocationProvider>(context, listen: false);
+    final timeEntryProvider =
+    Provider.of<TimeEntryProvider>(context, listen: false);
+    await locationProvider.getCurrentLocation();
 
-      allStations.forEach((currStation) {
-        Station station = Station.fromJson(currStation);
-        // print(locationProvider.currentMapLocation);
+    allStations.forEach((currStation) {
+      Station station = Station.fromJson(currStation);
+      // print(locationProvider.currentMapLocation);
 //        station.distance = distance.as(LengthUnit.Meter,
 //            new LatLng(station.latitude, station.longitude),
 //            locationProvider.currentMapLocation);
-        // print(station);
-        // print(new LatLng(station.longitude, station.latitude));
-        num dist = distance.as(
-            LengthUnit.Meter,
-            new LatLng(station.latitude, station.longitude),
-            locationProvider.currentMapLocation);
-        station.distance = dist.toDouble().roundToDouble();
+      // print(station);
+      // print(new LatLng(station.longitude, station.latitude));
+      num dist = distance.as(
+          LengthUnit.Meter,
+          new LatLng(station.latitude, station.longitude),
+          locationProvider.currentMapLocation);
+      station.distance = dist.toDouble().roundToDouble();
 
-        var dist_to_double = double.parse(station.distance.toString());
-        station.distance = dist_to_double / 1000;
+      var dist_to_double = double.parse(station.distance.toString());
+      station.distance = dist_to_double / 1000;
 
 //        station.distance = distance.as(LengthUnit.Meter,
 //            new LatLng(station.latitude, station.longitude), locationProvider.currentMapLocation);
-        res_stations.add(station);
-      });
-      print("here");
-      for (Station station in res_stations) {
-        List<TimeEntry> stationIncomingLines =
-            await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
-        station.incomingLines = stationIncomingLines;
-      }
+      res_stations.add(station);
+    });
+    for (Station station in res_stations) {
+      List<TimeEntry> stationIncomingLines =
+      await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
+      station.incomingLines = stationIncomingLines;
     }
 
     res_stations.sort((a, b) => a.distance.compareTo(b.distance));
@@ -132,8 +130,6 @@ class StationProvider with ChangeNotifier {
     stations = res_stations;
     dataFetched = true;
     notifyListeners();
-    print("res_stations");
-    print(res_stations);
 
     return res_stations;
   }

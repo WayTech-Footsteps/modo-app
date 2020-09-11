@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:waytech/models/POI.dart';
+import 'package:waytech/models/Station.dart';
+import 'package:waytech/providers/JourneyInfoProvider.dart';
 import 'package:waytech/providers/POIProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 
@@ -14,9 +16,11 @@ class MapIndicator extends StatefulWidget {
   final Function onMarkerTapped;
   final bool showPOIs;
   final bool showInfoWindow;
+  final bool onMap;
+  final Function changeTab;
 
   MapIndicator(
-      {this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false, this.showInfoWindow: false});
+      {this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false, this.showInfoWindow: false, this.onMap: false, this.changeTab});
 
   @override
   _MapIndicatorState createState() => _MapIndicatorState();
@@ -27,7 +31,7 @@ class _MapIndicatorState extends State<MapIndicator> {
   Set<Marker> _markers = {};
   BitmapDescriptor pinLocationIcon;
   List<POI> placesOfInterest = [];
-
+  Map<String, Station> journeyInfo = {};
   CameraPosition initialPosition;
   var location = new Location();
   LocationData currentMapLocation;
@@ -36,8 +40,6 @@ class _MapIndicatorState extends State<MapIndicator> {
   Future _getLocation() async {
     try {
       location.onLocationChanged.listen((LocationData currentLocation) {
-        print('Latitude:${currentLocation.latitude}');
-        print('Longitude:${currentLocation.longitude}');
         currentMapLocation = currentLocation;
         if (this.mounted) {
           setState(() {
@@ -51,7 +53,6 @@ class _MapIndicatorState extends State<MapIndicator> {
         return LatLng(currentLocation.latitude, currentLocation.longitude);
       });
     } catch (e) {
-      print('ERROR:$e');
       initialPosition = null;
     }
   }
@@ -61,7 +62,7 @@ class _MapIndicatorState extends State<MapIndicator> {
     placesOfInterest = await poiProvider.getPOIs();
   }
 
-  void setMapPins(StationProvider stationProvider) {
+  void setMapPins(StationProvider stationProvider, JourneyInfoProvider journeyProvider) {
     setState(() {
       stationProvider.stations.forEach((station) {
         _markers.add(Marker(
@@ -69,10 +70,47 @@ class _MapIndicatorState extends State<MapIndicator> {
             if (widget.selectionEnabled) {
               widget.onMarkerTapped(station);
               Navigator.of(context).pop();
+            } else if (widget.onMap) {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => Container(
+                    height: 200,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            journeyInfo["start"] = station;
+                            journeyProvider.addJourneyInfo(journeyInfo);
+                            Navigator.of(context).pop();
+                            widget.changeTab(2);
+                          },
+                          child: Text(
+                              "Choose as Origin",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+
+                        RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            journeyInfo["end"] = station;
+                            journeyProvider.addJourneyInfo(journeyInfo);
+                            Navigator.of(context).pop();
+                            widget.changeTab(2);
+                          },
+                          child: Text(
+                              "Choose as Destination",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        )
+                      ],
+                    ),
+
+                  )
+              );
             }
-            print("stat info");
-            print(station.longitude);
-            print(station.latitude);
           },
           infoWindow: widget.showInfoWindow ? InfoWindow(
             title: station.title
@@ -112,7 +150,6 @@ class _MapIndicatorState extends State<MapIndicator> {
       pinLocationIcon = onValue;
     });
     rootBundle.loadString('lib/assets/map_style.txt').then((string) {
-      print(string);
       _mapStyle = string;
     });
   }
@@ -120,6 +157,7 @@ class _MapIndicatorState extends State<MapIndicator> {
   @override
   Widget build(BuildContext context) {
     final StationProvider stationProvider = Provider.of(context);
+    final journeyProvider = Provider.of<JourneyInfoProvider>(context);
     return initialPosition == null || stationProvider.dataFetched == false
         ? Center(
             child: CircularProgressIndicator(),
@@ -130,9 +168,8 @@ class _MapIndicatorState extends State<MapIndicator> {
             myLocationButtonEnabled: true,
             mapToolbarEnabled: true,
             onMapCreated: (GoogleMapController controller) {
-              setMapPins(stationProvider);
+              setMapPins(stationProvider, journeyProvider);
               _controller = controller;
-              print(_mapStyle);
               setState(() {
                 _controller.setMapStyle(_mapStyle);
               });

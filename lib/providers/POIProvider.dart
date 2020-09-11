@@ -16,8 +16,6 @@ class POIProvider with ChangeNotifier {
       },
     );
 
-    print("places of interest");
-    print(response.body);
 
     List<Map<String, dynamic>> placesOfInterest = List<Map<String, dynamic>>.from(json.decode(response.body));
 

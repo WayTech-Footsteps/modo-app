@@ -53,8 +53,6 @@ class _TabScreenState extends State<TabScreen> {
     setState(() {
       GlobalJourneyInfo.jInfo = info;
     });
-    print("erfan is khub");
-    print(GlobalJourneyInfo.jInfo);
   }
 
   @override

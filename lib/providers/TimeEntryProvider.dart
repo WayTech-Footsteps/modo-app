@@ -20,7 +20,6 @@ class TimeEntryProvider with ChangeNotifier {
       },
     );
 
-    print(response.body);
 
     List<Map<String, dynamic>> timeEntries = List<Map<String, dynamic>>.from(json.decode(response.body));
 
@@ -44,8 +43,6 @@ class TimeEntryProvider with ChangeNotifier {
     }
 
 
-    print("converted");
-    print(convertedTimeEntries);
 
     return convertedTimeEntries;
   }
@@ -62,7 +59,6 @@ class TimeEntryProvider with ChangeNotifier {
       },
     );
 
-    print(response.body);
 
     List<Map<String, dynamic>> incomingLinesEntries = List<Map<String, dynamic>>.from(json.decode(response.body));
 
@@ -74,8 +70,6 @@ class TimeEntryProvider with ChangeNotifier {
 
 
 
-    print("converted");
-    print(convertedLineEntries);
 
     return convertedLineEntries;
   }
