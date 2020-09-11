@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:waytech/models/Station.dart';
 import 'package:waytech/models/destination.dart';
+import 'package:waytech/models/globalJourneyInfo.dart';
 import 'package:waytech/screens/JourneyScreen.dart';
 import 'package:waytech/screens/favorites_screen.dart';
 import 'package:waytech/screens/map_screen.dart';
 import 'package:waytech/screens/near_me_screen.dart';
 
 class TabScreen extends StatefulWidget {
+  Map<String, Station> journeyInfo;
+  int index;
+
+
+  TabScreen({this.journeyInfo, this.index});
+
   @override
   _TabScreenState createState() => _TabScreenState();
 }
 
 class _TabScreenState extends State<TabScreen> {
   int _currentIndex = 0;
-  List<Destination> allDestinations = <Destination>[
-    Destination('Near Me', Icons.near_me, NearMeScreen()),
-    Destination('Map', Icons.map, MapScreen()),
-    Destination('Journey', Icons.search, JourneyScreen()),
-    Destination('Favorites', Icons.favorite_border, FavoritesScreen()),
-  ];
+  Map<String, Station> _journeyInfoo;
+  List<Destination> allDestinations;
 
   BottomNavigationBarItem _bottomNavItemMaker(String title, IconData iconData) {
     return BottomNavigationBarItem(
@@ -39,6 +43,34 @@ class _TabScreenState extends State<TabScreen> {
     }
   }
 
+  void changeTab(int tabIndex) {
+    setState(() {
+      _currentIndex = tabIndex;
+    });
+  }
+
+  void changeJourneyInfo(Map<String, Station> info) {
+    setState(() {
+      GlobalJourneyInfo.jInfo = info;
+    });
+    print("erfan is khub");
+    print(GlobalJourneyInfo.jInfo);
+  }
+
+  @override
+  void initState() {
+    JourneyScreen js = JourneyScreen();
+    // TODO: implement initState
+    super.initState();
+//    _journeyInfoo = widget.journeyInfo;
+    allDestinations = <Destination>[
+      Destination('Near Me', Icons.near_me, NearMeScreen()),
+      Destination('Map', Icons.map, MapScreen(changeTab: (i) => changeTab(i), changeJourneyInfo: (info) => changeJourneyInfo(info), journeyScreen: js,)),
+      Destination('Journey', Icons.search, js),
+      Destination('Favorites', Icons.favorite_border, FavoritesScreen())];
+//    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,11 +88,12 @@ class _TabScreenState extends State<TabScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int index) {
+          widget.index = null;
           setState(() {
             _currentIndex = index;
           });
         },
-        currentIndex: _currentIndex,
+        currentIndex: widget.index == null ? _currentIndex : 2,
         items: allDestinations.map((Destination destination) {
           return BottomNavigationBarItem(
             icon: Icon(destination.icon),

@@ -8,10 +8,13 @@ import 'package:intl/intl.dart';
 
 //import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/enums/MapMethod.dart';
 import 'package:waytech/enums/TimeEntryType.dart';
 import 'package:waytech/models/Path.dart';
+import 'package:waytech/models/Station.dart';
 import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/models/TimelineStep.dart';
+import 'package:waytech/models/globalJourneyInfo.dart';
 import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/widgets/CustomIndicator.dart';
@@ -22,12 +25,14 @@ import 'package:waytech/widgets/input_field.dart';
 import 'package:waytech/widgets/near_station_tile.dart';
 
 class JourneyScreen extends StatefulWidget {
+  
+
   @override
   _JourneyScreenState createState() => _JourneyScreenState();
 }
 
 class _JourneyScreenState extends State<JourneyScreen> {
-  final Map<String, dynamic> info = {};
+  Map<String, dynamic> info = {};
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
   List<TimeEntry> timeEntries = [];
@@ -39,6 +44,68 @@ class _JourneyScreenState extends State<JourneyScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Map<String, Station> journeyInfo = GlobalJourneyInfo.jInfo;
+    print(journeyInfo);
+//    if (journeyInfo != null) {
+//      Station startStation =  journeyInfo["start"];
+//      Station endStation =  journeyInfo["end"];
+//      if (startStation != null) {
+//        fromController.text = startStation.title;
+//        info["start"] = startStation.id;
+//      }
+//
+//      if (endStation != null) {
+//        toController.text = endStation.title;
+//        info["end"] = endStation.id;
+//      }
+//
+//
+////      if (to != null) {
+////        toController.text = to;
+////      }
+//
+//    }
+  }
+
+  Map<String, Station> journeyInfo;
+
+  void setJourneyInfo(){
+    print("amir amir amir");
+    print(GlobalJourneyInfo.jInfo);
+
+
+    setState(() {
+      journeyInfo = GlobalJourneyInfo.jInfo;
+
+      if (journeyInfo != null) {
+        Station startStation =  journeyInfo["start"];
+        Station endStation =  journeyInfo["end"];
+        if (startStation != null) {
+          fromController.text = startStation.title;
+          info["start"] = startStation.id;
+        }
+
+        if (endStation != null) {
+          toController.text = endStation.title;
+          info["end"] = endStation.id;
+        }
+
+
+//      if (to != null) {
+//        toController.text = to;
+//      }
+
+      }
+    });
+
+    print("erfan erfan erfan");
+    print(journeyInfo);
+  }
+
+  localSetState() {
+    setState(() {
+
+    });
   }
 
   Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
@@ -46,7 +113,6 @@ class _JourneyScreenState extends State<JourneyScreen> {
       Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(
           SnackBar(
-
             content: Text(
               'Fill All the Fields Above!',
             ),
@@ -102,8 +168,12 @@ class _JourneyScreenState extends State<JourneyScreen> {
     toController.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      setJourneyInfo();
+    });
     final scaffold = Scaffold.of(context);
 
     final List<Widget> inputTiles = [
@@ -127,6 +197,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                         ),
                         body: MapIndicator(
                           selectionEnabled: true,
+                          showInfoWindow: false,
+                          mapMethod: MapMethod.OnJourney,
                           onMarkerTapped: (result) {
                             fromController.text = result.title;
                             info["from"] = result.title;
@@ -169,6 +241,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           ),
                           body: MapIndicator(
                             selectionEnabled: true,
+                            showInfoWindow: false,
+                            mapMethod: MapMethod.OnJourney,
                             onMarkerTapped: (result) {
                               toController.text = result.title;
                               info["to"] = result.title;
@@ -239,7 +313,8 @@ class _JourneyScreenState extends State<JourneyScreen> {
                 RoundedLoadingButton(
                   borderRadius: 5,
                   controller: _btnController,
-                  onPressed: () => getTimeEntry(timeEntryProvider),
+//                  onPressed: () => getTimeEntry(timeEntryProvider),
+                onPressed: ()=> localSetState(),
                   elevation: 5,
                   child: Text(
                     "Find the Journey",
@@ -292,7 +367,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           rightChild: TimelineChild(
                             type: TimeEntryType.Start,
                             step: TimelineStep(
-                              departureIcon: Icons.departure_board,
+                              departureIcon: Icons.subdirectory_arrow_right,
                               departureTime: timeEntries[index].departureTime,
                             ),
                           ),
@@ -325,7 +400,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           rightChild: TimelineChild(
                             type: TimeEntryType.End,
                             step: TimelineStep(
-                              arrivalIcon: Icons.access_time,
+                              arrivalIcon: Icons.subdirectory_arrow_left,
                               arrivalTime: timeEntries[index - 1].arrivalTime,
                             ),
                           ),
@@ -341,6 +416,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             width: 40,
                             height: 40,
                             indicator: CustomIndicator(
+                              busLineChange: timeEntries[index].lineNumber != timeEntries[index - 1].lineNumber,
                               timeEntryType: TimeEntryType.Middle,
                               number:
                                   '${timeEntries[index].lineNumber.toString()}',
@@ -365,9 +441,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                                 timeEntries[index].departureTime,
                               ),
                               breakTimeIcon: Icons.local_cafe,
-                              departureIcon: Icons.departure_board,
+                              departureIcon: Icons.subdirectory_arrow_right,
                               departureTime: timeEntries[index].departureTime,
-                              arrivalIcon: Icons.access_time,
+                              arrivalIcon: Icons.subdirectory_arrow_left,
                               arrivalTime: timeEntries[index - 1].arrivalTime,
                             ),
                           ),

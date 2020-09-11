@@ -1,0 +1,4 @@
+enum MapMethod {
+  OnMap,
+  OnJourney
+}

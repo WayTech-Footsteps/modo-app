@@ -4,8 +4,9 @@ import 'package:waytech/enums/TimeEntryType.dart';
 class CustomIndicator extends StatelessWidget {
   final TimeEntryType timeEntryType;
   final String number;
+  final bool busLineChange;
 
-  const CustomIndicator({Key key, this.number, this.timeEntryType}) : super(key: key);
+  const CustomIndicator({Key key, this.number, this.timeEntryType, this.busLineChange : false}) : super(key: key);
 
 
 
@@ -23,8 +24,8 @@ class CustomIndicator extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.red,
-              blurRadius: 15,
-              spreadRadius: 10,
+//              blurRadius: 5,
+//              spreadRadius: 2,
             ),
           ],
           shape: BoxShape.circle,
@@ -34,7 +35,7 @@ class CustomIndicator extends StatelessWidget {
     } else if (timeEntryType == TimeEntryType.Middle) {
       indicator = Container(
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          shape: busLineChange ?  BoxShape.rectangle : BoxShape.circle,
           color: Theme.of(context).primaryColor,
         ),
         child: Center(
@@ -56,8 +57,8 @@ class CustomIndicator extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.green,
-              blurRadius: 15,
-              spreadRadius: 10,
+//              blurRadius: 5,
+//              spreadRadius: 2,
             ),
           ],
           shape: BoxShape.circle,

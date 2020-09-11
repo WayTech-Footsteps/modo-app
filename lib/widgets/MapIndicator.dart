@@ -4,17 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:waytech/enums/MapMethod.dart';
 import 'package:waytech/models/POI.dart';
+import 'package:waytech/models/Station.dart';
 import 'package:waytech/providers/POIProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
+import 'package:waytech/screens/JourneyScreen.dart';
+import 'package:waytech/screens/tab_screen.dart';
+
 
 class MapIndicator extends StatefulWidget {
   final bool selectionEnabled;
   final Function onMarkerTapped;
   final bool showPOIs;
-
-
-  MapIndicator({this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false});
+  final bool showInfoWindow;
+  final MapMethod mapMethod;
+  final Function changeTab;
+  final JourneyScreen journeyScreen;
+  final Function changeJourneyInfo;
+  MapIndicator({this.selectionEnabled, this.onMarkerTapped, this.showPOIs: false, this.showInfoWindow: false, this.mapMethod, this.changeTab, this.changeJourneyInfo, this.journeyScreen});
 
   @override
   _MapIndicatorState createState() => _MapIndicatorState();
@@ -25,6 +33,7 @@ class _MapIndicatorState extends State<MapIndicator> {
   Set<Marker> _markers = {};
   BitmapDescriptor pinLocationIcon;
   List<POI> placesOfInterest = [];
+  final Map<String, Station> journeyInfo = {};
 
   CameraPosition initialPosition;
   var location = new Location();
@@ -65,9 +74,48 @@ class _MapIndicatorState extends State<MapIndicator> {
       stationProvider.stations.forEach((station) {
         _markers.add(Marker(
           onTap: () {
-            if (widget.selectionEnabled) {
+            if (widget.mapMethod == MapMethod.OnJourney) {
               widget.onMarkerTapped(station);
               Navigator.of(context).pop();
+            } else if (widget.mapMethod == MapMethod.OnMap) {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => Container(
+                    height: 200,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            journeyInfo["start"] = station;
+                            print("erfan is love");
+                            print(journeyInfo);
+                            widget.changeJourneyInfo(journeyInfo);
+//                            widget.journeyScreen.();
+                            widget.changeTab(2);
+                          },
+                          child: Text(
+                              "Choose as Origin"
+                          ),
+                        ),
+
+                        RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {
+                            journeyInfo["end"] = station;
+                            widget.changeJourneyInfo(journeyInfo);
+                            widget.changeTab(2);
+                          },
+                          child: Text(
+                            "Choose as Destination"
+                          ),
+                        )
+                      ],
+                    ),
+
+                  )
+              );
             }
             print("stat info");
             print(station.longitude);
@@ -75,15 +123,21 @@ class _MapIndicatorState extends State<MapIndicator> {
           },
           markerId: MarkerId("station" + station.id.toString()),
           position: LatLng(station.longitude, station.latitude),
+          infoWindow: widget.mapMethod == MapMethod.OnMap ? InfoWindow(
+            title: station.title
+          ) : InfoWindow(),
           icon: pinLocationIcon,));
       });
 
-      if (widget.showPOIs) {
+      if (widget.mapMethod == MapMethod.OnMap) {
         placesOfInterest.forEach((poi) {
           _markers.add(Marker(
               markerId: MarkerId("poi" + poi.id.toString()),
               position: LatLng(poi.longitude, poi.latitude),
-              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen)));
+              infoWindow: widget.mapMethod == MapMethod.OnMap ? InfoWindow(
+                  title: poi.title
+              ) : InfoWindow(),
+              icon: BitmapDescriptor.defaultMarker));
         });
       }
 
