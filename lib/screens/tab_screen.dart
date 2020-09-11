@@ -96,10 +96,9 @@ class _TabScreenState extends State<TabScreen> {
         currentIndex: widget.index == null ? _currentIndex : 2,
         items: allDestinations.map((Destination destination) {
           return BottomNavigationBarItem(
-            icon: Icon(destination.icon),
-            title: Text(destination.title),
-            backgroundColor: Theme.of(context).primaryColor
-          );
+              icon: Icon(destination.icon),
+              title: Text(destination.title),
+              backgroundColor: Theme.of(context).primaryColor);
         }).toList(),
       ),
     );
