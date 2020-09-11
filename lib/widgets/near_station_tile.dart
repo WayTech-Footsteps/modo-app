@@ -23,16 +23,23 @@ class _NearStationTileState extends State<NearStationTile> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-        title: Container(
-          child: Row(
-            children: [
-              Icon(FontAwesomeIcons.bus),
-              SizedBox(
-                width: 20.0,
-              ),
-              Text(widget.station.title),
-            ],
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(FontAwesomeIcons.bus),
+            SizedBox(
+              width: 20.0,
+            ),
+            FittedBox(
+                fit: BoxFit.contain,
+                child: Container(
+                  child: Text(
+                    widget.station.title,
+                    textAlign: TextAlign.center,
+                  ),
+                  width: 140.0,
+                )),
+          ],
         ),
         trailing: Container(
           child: Row(
@@ -81,7 +88,7 @@ class _NearStationTileState extends State<NearStationTile> {
                     ),
                   ),
                   title: Text(e.startLoc),
-                  trailing: Text(e.departureTime),
+                  trailing: Text(e.arrivalTime),
                 )))
             .toList());
   }

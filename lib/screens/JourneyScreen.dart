@@ -32,7 +32,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
   List<TimeEntry> timeEntries = [];
 
   final RoundedLoadingButtonController _btnController =
-  new RoundedLoadingButtonController();
+      new RoundedLoadingButtonController();
 
   @override
   void initState() {
@@ -87,22 +87,20 @@ class _JourneyScreenState extends State<JourneyScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                maintainState: true,
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: Text("Choose Origin..."),
-                  ),
-                  body: MapIndicator(
-                    selectionEnabled: true,
-                    onMarkerTapped: (result) {
-                      fromController.text = result.title;
-                      info["from"] = result.title;
-                      info["start"] = result.id;
-                    },
-                    showPOIs: false,
-                  ),
-                )
-              ));
+                  builder: (context) => Scaffold(
+                        appBar: AppBar(
+                          title: Text("Choose Origin..."),
+                        ),
+                        body: MapIndicator(
+                          selectionEnabled: true,
+                          onMarkerTapped: (result) {
+                            fromController.text = result.title;
+                            info["from"] = result.title;
+                            info["start"] = result.id;
+                          },
+                          showPOIs: false,
+                        ),
+                      )));
 
 //          LocationResult result = await showLocationPicker(
 //            context,
@@ -131,22 +129,20 @@ class _JourneyScreenState extends State<JourneyScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  maintainState: true,
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: Text("Choose Destination..."),
-                    ),
-                    body: MapIndicator(
-                      selectionEnabled: true,
-                      onMarkerTapped: (result) {
-                        toController.text = result.title;
-                        info["to"] = result.title;
-                        info["end"] = result.id;
-                      },
-                      showPOIs: false,
-                    ),
-                  )
-                ));
+                    builder: (context) => Scaffold(
+                          appBar: AppBar(
+                            title: Text("Choose Destination..."),
+                          ),
+                          body: MapIndicator(
+                            selectionEnabled: true,
+                            onMarkerTapped: (result) {
+                              toController.text = result.title;
+                              info["to"] = result.title;
+                              info["end"] = result.id;
+                            },
+                            showPOIs: false,
+                          ),
+                        )));
 
 //            Navigator.push(
 //              context,
@@ -235,7 +231,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             indicator: CustomIndicator(
                               timeEntryType: TimeEntryType.Start,
                               number:
-                              '${timeEntries[index].lineNumber.toString()}',
+                                  '${timeEntries[index].lineNumber.toString()}',
                             ),
                             drawGap: true,
                           ),
@@ -244,11 +240,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           ),
                           leftChild: Text(
                             timeEntries[index].startLoc,
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-
                           rightChild: TimelineChild(
                             type: TimeEntryType.Start,
                             step: TimelineStep(
@@ -270,7 +264,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             indicator: CustomIndicator(
                               timeEntryType: TimeEntryType.End,
                               number:
-                              '${timeEntries[index].lineNumber.toString()}',
+                                  '${timeEntries[index].lineNumber.toString()}',
                             ),
                             drawGap: true,
                           ),
@@ -279,11 +273,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           ),
                           leftChild: Text(
                             timeEntries[index].startLoc,
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-
                           rightChild: TimelineChild(
                             type: TimeEntryType.End,
                             step: TimelineStep(
@@ -305,7 +297,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                             indicator: CustomIndicator(
                               timeEntryType: TimeEntryType.Middle,
                               number:
-                              '${timeEntries[index].lineNumber.toString()}',
+                                  '${timeEntries[index].lineNumber.toString()}',
                             ),
                             drawGap: true,
                           ),
@@ -322,16 +314,15 @@ class _JourneyScreenState extends State<JourneyScreen> {
                           rightChild: TimelineChild(
                             type: TimeEntryType.Middle,
                             step: TimelineStep(
-                                breakTimeDuration: calculateBreakTime(
-                                  timeEntries[index - 1].arrivalTime,
-                                  timeEntries[index].departureTime,
-                                ),
-                                breakTimeIcon: Icons.local_cafe,
-                                departureIcon: Icons.departure_board,
-                                departureTime: timeEntries[index].departureTime,
-                                arrivalIcon: Icons.access_time,
-                                arrivalTime: timeEntries[index - 1].arrivalTime,
-
+                              breakTimeDuration: calculateBreakTime(
+                                timeEntries[index - 1].arrivalTime,
+                                timeEntries[index].departureTime,
+                              ),
+                              breakTimeIcon: Icons.local_cafe,
+                              departureIcon: Icons.departure_board,
+                              departureTime: timeEntries[index].departureTime,
+                              arrivalIcon: Icons.access_time,
+                              arrivalTime: timeEntries[index - 1].arrivalTime,
                             ),
                           ),
                         );
