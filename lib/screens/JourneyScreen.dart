@@ -15,6 +15,7 @@ import 'package:waytech/models/TimelineStep.dart';
 import 'package:waytech/providers/TimeEntryProvider.dart';
 import 'package:waytech/providers/StationProvider.dart';
 import 'package:waytech/widgets/CustomIndicator.dart';
+import 'package:waytech/widgets/DateTimePicker.dart';
 import 'package:waytech/widgets/MapIndicator.dart';
 import 'package:waytech/widgets/TimelineChild.dart';
 import 'package:waytech/widgets/input_field.dart';
@@ -41,17 +42,40 @@ class _JourneyScreenState extends State<JourneyScreen> {
   }
 
   Future<void> getTimeEntry(TimeEntryProvider timeEntryProvider) async {
-    List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
-        info["start"], info["end"], "11:35:00");
+    if (info["start"] == null || info["end"] == null || info["time"] == null) {
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(
+          SnackBar(
+
+            content: Text(
+              'Fill All the Fields Above!',
+            ),
+            duration: Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'Discard',
+              onPressed: () {
+                Scaffold.of(context).hideCurrentSnackBar();
+              },
+              textColor: Colors.deepOrange,
+            ),
+          )
+      );
+    } else {
+      List<TimeEntry> fetchedTimeEntries = await timeEntryProvider.getTimeEntries(
+          info["start"], info["end"], info["time"]);
+
+//      _btnController.reset();
+
+      print("FETCHED");
+      print(fetchedTimeEntries);
+
+      setState(() {
+        timeEntries = fetchedTimeEntries;
+      });
+    }
 
     _btnController.reset();
 
-    print("FETCHED");
-    print(fetchedTimeEntries);
-
-    setState(() {
-      timeEntries = fetchedTimeEntries;
-    });
   }
 
   Duration calculateBreakTime(
@@ -71,7 +95,17 @@ class _JourneyScreenState extends State<JourneyScreen> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    fromController.dispose();
+    toController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+
     final List<Widget> inputTiles = [
       InputField(
         onSaved: (v) {
@@ -166,6 +200,18 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //            );
           },
           label: "To"),
+
+      DateTimePicker(
+        label: "Choose Time",
+        onChanged: (v) {
+          info["time"] = v;
+          print("chosen time");
+          print(info["time"]);
+        },
+
+
+
+      )
     ];
 
     final mediaSize = MediaQuery.of(context).size;
