@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -78,6 +79,17 @@ class _JourneyScreenState extends State<JourneyScreen> {
     return breakTimeDuration;
   }
 
+  void swapJourneyInfo() {
+    String origin = fromController.text;
+    fromController.text = toController.text;
+    toController.text = origin;
+
+    int startId = info["start"];
+    info["start"] = info["end"];
+    info["end"] = startId;
+
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -100,36 +112,46 @@ class _JourneyScreenState extends State<JourneyScreen> {
       info["end"] = journeyProvider.journeyInfo["end"].id;
     }
 
+
+    // TODO: to make the tiles represent vertically, remove expanded from tiles, and use row as parent of the icon button only
     final List<Widget> inputTiles = [
-      InputField(
-        onSaved: (v) {
-          info["from"] = v;
-        },
-        readOnly: true,
-        validator: null,
-        suffixIcon: Icon(Icons.map),
-        isDone: true,
-        label: "From",
-        controller: fromController,
-        actionFunction: () async {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: Text("Choose Origin..."),
-                        ),
-                        body: MapIndicator(
-                          selectionEnabled: true,
-                          showInfoWindow: false,
-                          onMarkerTapped: (result) {
-                            fromController.text = result.title;
-                            info["from"] = result.title;
-                            info["start"] = result.id;
-                          },
-                          showPOIs: false,
-                        ),
-                      )));
+
+      Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
+        key: Key("substitute"),
+        children: [
+          Expanded(
+            flex: 3,
+            child: InputField(
+              onSaved: (v) {
+                info["from"] = v;
+              },
+              readOnly: true,
+              validator: null,
+              suffixIcon: Icon(Icons.map),
+              isDone: true,
+              label: "From",
+              controller: fromController,
+              actionFunction: () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                          appBar: AppBar(
+                            title: Text("Choose Origin..."),
+                          ),
+                          body: MapIndicator(
+                            selectionEnabled: true,
+                            showInfoWindow: false,
+                            onMarkerTapped: (result) {
+                              fromController.text = result.title;
+                              info["from"] = result.title;
+                              info["start"] = result.id;
+                            },
+                            showPOIs: false,
+                          ),
+                        )));
 
 //          LocationResult result = await showLocationPicker(
 //            context,
@@ -144,35 +166,50 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //          fromController.text = result.address;
 //
 //          info["from"] = result.address;
-        },
-      ),
-      InputField(
-          onSaved: (v) {
-            info["to"] = v;
-          },
-          readOnly: true,
-          controller: toController,
-          validator: null,
-          suffixIcon: Icon(Icons.map),
-          actionFunction: () async {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                          appBar: AppBar(
-                            title: Text("Choose Destination..."),
-                          ),
-                          body: MapIndicator(
-                            selectionEnabled: true,
-                            showInfoWindow: false,
-                            onMarkerTapped: (result) {
-                              toController.text = result.title;
-                              info["to"] = result.title;
-                              info["end"] = result.id;
-                            },
-                            showPOIs: false,
-                          ),
-                        )));
+              },
+
+            ),
+          ),
+
+          Expanded(
+            flex: 1,
+            child: IconButton(
+              icon: Icon(Icons.compare_arrows),
+              onPressed: () {
+                swapJourneyInfo();
+              },
+            ),
+          ),
+
+          Expanded(
+            flex: 3,
+            child: InputField(
+                onSaved: (v) {
+                  info["to"] = v;
+                },
+                readOnly: true,
+                controller: toController,
+                validator: null,
+                suffixIcon: Icon(Icons.map),
+                actionFunction: () async {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            appBar: AppBar(
+                              title: Text("Choose Destination..."),
+                            ),
+                            body: MapIndicator(
+                              selectionEnabled: true,
+                              showInfoWindow: false,
+                              onMarkerTapped: (result) {
+                                toController.text = result.title;
+                                info["to"] = result.title;
+                                info["end"] = result.id;
+                              },
+                              showPOIs: false,
+                            ),
+                          )));
 
 //            Navigator.push(
 //              context,
@@ -190,8 +227,12 @@ class _JourneyScreenState extends State<JourneyScreen> {
 //                ),
 //              )
 //            );
-          },
-          label: "To"),
+                },
+                label: "To"),
+          ),
+        ],
+      ),
+
       DateTimePicker(
         label: "Choose Time",
         onChanged: (v) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,11 +106,17 @@ class StationProvider with ChangeNotifier {
 //            new LatLng(station.latitude, station.longitude), locationProvider.currentMapLocation);
       res_stations.add(station);
     });
+    String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
+    print("currentTime" + currentTime);
     for (Station station in res_stations) {
+      print(station.id);
       List<TimeEntry> stationIncomingLines =
-      await timeEntryProvider.getIncomingLines(station.id, "11:30:00");
+      await timeEntryProvider.getIncomingLines(station.id, currentTime);
+
       station.incomingLines = stationIncomingLines;
     }
+
+
 
     res_stations.sort((a, b) => a.distance.compareTo(b.distance));
 
