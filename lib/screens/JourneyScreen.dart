@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:waytech/enums/TimeEntryType.dart';
+import 'package:waytech/models/Station.dart';
 import 'package:waytech/models/TimeEntry.dart';
 import 'package:waytech/models/TimelineStep.dart';
 import 'package:waytech/providers/JourneyInfoProvider.dart';
@@ -148,6 +149,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                               fromController.text = result.title;
                               info["from"] = result.title;
                               info["start"] = result.id;
+                              journeyProvider.journeyInfo["start"] = result;
                             },
                             showPOIs: false,
                           ),
@@ -177,6 +179,9 @@ class _JourneyScreenState extends State<JourneyScreen> {
               icon: Icon(Icons.compare_arrows),
               onPressed: () {
                 swapJourneyInfo();
+                Station startStation = journeyProvider.journeyInfo["start"];
+                journeyProvider.journeyInfo["start"] = journeyProvider.journeyInfo["end"];
+                journeyProvider.journeyInfo["end"] = startStation;
               },
             ),
           ),
@@ -206,6 +211,7 @@ class _JourneyScreenState extends State<JourneyScreen> {
                                 toController.text = result.title;
                                 info["to"] = result.title;
                                 info["end"] = result.id;
+                                journeyProvider.journeyInfo["end"] = result;
                               },
                               showPOIs: false,
                             ),

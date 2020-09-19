@@ -107,9 +107,7 @@ class StationProvider with ChangeNotifier {
       res_stations.add(station);
     });
     String currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
-    print("currentTime" + currentTime);
     for (Station station in res_stations) {
-      print(station.id);
       List<TimeEntry> stationIncomingLines =
       await timeEntryProvider.getIncomingLines(station.id, currentTime);
 
